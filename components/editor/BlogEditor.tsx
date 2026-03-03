@@ -1,0 +1,219 @@
+"use client";
+
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Underline from "@tiptap/extension-underline";
+import Link from "@tiptap/extension-link";
+import Image from "@tiptap/extension-image";
+import Youtube from "@tiptap/extension-youtube";
+import Placeholder from "@tiptap/extension-placeholder";
+import {
+    Bold, Italic, Underline as UnderlineIcon,
+    Link as LinkIcon, Image as ImageIcon,
+    List, ListOrdered, Heading1, Heading2,
+    Youtube as YoutubeIcon, Quote, Undo, Redo
+} from "lucide-react";
+
+interface BlogEditorProps {
+    content: string;
+    onChange: (content: string) => void;
+}
+
+const MenuBar = ({ editor }: { editor: any }) => {
+    if (!editor) return null;
+
+    const addLink = () => {
+        const url = window.prompt("Nhập địa chỉ Link:");
+        if (url) {
+            editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+        }
+    };
+
+    const addImage = () => {
+        const url = window.prompt("Nhập URL hình ảnh:");
+        if (url) {
+            editor.chain().focus().setImage({ src: url }).run();
+        }
+    };
+
+    const addYoutubeVideo = () => {
+        const url = window.prompt("Nhập URL Youtube:");
+        if (url) {
+            editor.chain().focus().setYoutubeVideo({ src: url }).run();
+        }
+    };
+
+    return (
+        <div className="flex flex-wrap gap-1 p-2 border-b bg-gray-50 rounded-t-2xl sticky top-0 z-10">
+            <button
+                onClick={() => editor.chain().focus().toggleBold().run()}
+                className={`p-2 rounded-lg transition-colors ${editor.isActive("bold") ? "bg-blue-100 text-blue-600" : "hover:bg-gray-200"}`}
+                title="In đậm"
+            >
+                <Bold size={18} />
+            </button>
+            <button
+                onClick={() => editor.chain().focus().toggleItalic().run()}
+                className={`p-2 rounded-lg transition-colors ${editor.isActive("italic") ? "bg-blue-100 text-blue-600" : "hover:bg-gray-200"}`}
+                title="In nghiêng"
+            >
+                <Italic size={18} />
+            </button>
+            <button
+                onClick={() => editor.chain().focus().toggleUnderline().run()}
+                className={`p-2 rounded-lg transition-colors ${editor.isActive("underline") ? "bg-blue-100 text-blue-600" : "hover:bg-gray-200"}`}
+                title="Gạch chân"
+            >
+                <UnderlineIcon size={18} />
+            </button>
+
+            <div className="w-px h-6 bg-gray-300 mx-1 self-center"></div>
+
+            <button
+                onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                className={`p-2 rounded-lg transition-colors ${editor.isActive("heading", { level: 1 }) ? "bg-blue-100 text-blue-600" : "hover:bg-gray-200"}`}
+                title="Tiêu đề 1"
+            >
+                <Heading1 size={18} />
+            </button>
+            <button
+                onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                className={`p-2 rounded-lg transition-colors ${editor.isActive("heading", { level: 2 }) ? "bg-blue-100 text-blue-600" : "hover:bg-gray-200"}`}
+                title="Tiêu đề 2"
+            >
+                <Heading2 size={18} />
+            </button>
+
+            <div className="w-px h-6 bg-gray-300 mx-1 self-center"></div>
+
+            <button
+                onClick={() => editor.chain().focus().toggleBulletList().run()}
+                className={`p-2 rounded-lg transition-colors ${editor.isActive("bulletList") ? "bg-blue-100 text-blue-600" : "hover:bg-gray-200"}`}
+                title="Danh sách dấu chấm"
+            >
+                <List size={18} />
+            </button>
+            <button
+                onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                className={`p-2 rounded-lg transition-colors ${editor.isActive("orderedList") ? "bg-blue-100 text-blue-600" : "hover:bg-gray-200"}`}
+                title="Danh sách số"
+            >
+                <ListOrdered size={18} />
+            </button>
+            <button
+                onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                className={`p-2 rounded-lg transition-colors ${editor.isActive("blockquote") ? "bg-blue-100 text-blue-600" : "hover:bg-gray-200"}`}
+                title="Trích dẫn"
+            >
+                <Quote size={18} />
+            </button>
+
+            <div className="w-px h-6 bg-gray-300 mx-1 self-center"></div>
+
+            <button
+                onClick={addLink}
+                className={`p-2 rounded-lg transition-colors ${editor.isActive("link") ? "bg-blue-100 text-blue-600" : "hover:bg-gray-200"}`}
+                title="Thêm link"
+            >
+                <LinkIcon size={18} />
+            </button>
+            <button
+                onClick={addImage}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-200"
+                title="Thêm hình ảnh"
+            >
+                <ImageIcon size={18} />
+            </button>
+            <button
+                onClick={addYoutubeVideo}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-200"
+                title="Thêm video Youtube"
+            >
+                <YoutubeIcon size={18} />
+            </button>
+
+            <div className="flex-1"></div>
+
+            <button
+                onClick={() => editor.chain().focus().undo().run()}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-200"
+                title="Hoàn tác"
+            >
+                <Undo size={18} />
+            </button>
+            <button
+                onClick={() => editor.chain().focus().redo().run()}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-200"
+                title="Làm lại"
+            >
+                <Redo size={18} />
+            </button>
+        </div>
+    );
+};
+
+export default function BlogEditor({ content, onChange }: BlogEditorProps) {
+    const editor = useEditor({
+        extensions: [
+            StarterKit,
+            Underline,
+            Link.configure({
+                openOnClick: false,
+                HTMLAttributes: {
+                    class: "text-blue-600 underline cursor-pointer",
+                },
+            }),
+            Image.configure({
+                HTMLAttributes: {
+                    class: "rounded-2xl shadow-lg max-w-full my-4",
+                },
+            }),
+            Youtube.configure({
+                width: 840,
+                height: 480,
+                HTMLAttributes: {
+                    class: "rounded-2xl shadow-xl aspect-video w-full my-6",
+                },
+            }),
+            Placeholder.configure({
+                placeholder: "Bắt đầu viết nội dung bài viết tuyệt vời của bạn tại đây...",
+            }),
+        ],
+        immediatelyRender: false,
+        content: content,
+        onUpdate: ({ editor }) => {
+            onChange(editor.getHTML());
+        },
+        editorProps: {
+            attributes: {
+                class: "prose prose-lg max-w-none focus:outline-none min-h-[400px] p-6 font-body",
+            },
+        },
+    });
+
+    return (
+        <div className="border border-gray-200 rounded-2xl bg-white shadow-sm focus-within:border-blue-300 transition-colors">
+            <MenuBar editor={editor} />
+            <EditorContent editor={editor} />
+
+            <style jsx global>{`
+            .tiptap p.is-editor-empty:first-child::before {
+               color: #adb5bd;
+               content: attr(data-placeholder);
+               float: left;
+               height: 0;
+               pointer-events: none;
+            }
+            .tiptap {
+               font-family: inherit;
+            }
+            .tiptap blockquote {
+               border-left: 4px solid #3b82f6;
+               padding-left: 1rem;
+               font-style: italic;
+               color: #4b5563;
+            }
+         `}</style>
+        </div>
+    );
+}

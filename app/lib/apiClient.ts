@@ -1,0 +1,93 @@
+/**
+ * ╔═══════════════════════════════════════════════════════╗
+ * ║               API CLIENT — CENTRAL CONFIG             ║
+ * ║  Tất cả cấu hình HTTP được định nghĩa ở đây.          ║
+ * ║  Để thêm endpoint mới → tạo file trong app/services/  ║
+ * ╚═══════════════════════════════════════════════════════╝
+ */
+
+// ─── Base URL ─────────────────────────────────────────────────────────────────
+// Đặt NEXT_PUBLIC_API_URL trong .env.local để thay đổi base URL
+export const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+
+// ─── Error class ──────────────────────────────────────────────────────────────
+export class ApiError extends Error {
+    statusCode: number;
+    errorCode?: string;
+    details?: unknown;
+
+    constructor(
+        message: string,
+        statusCode: number,
+        errorCode?: string,
+        details?: unknown
+    ) {
+        super(message);
+        this.name = "ApiError";
+        this.statusCode = statusCode;
+        this.errorCode = errorCode;
+        this.details = details;
+    }
+}
+
+// ─── Default options ───────────────────────────────────────────────────────────
+const DEFAULT_HEADERS: HeadersInit = {
+    "Content-Type": "application/json",
+};
+
+// ─── Core fetch wrapper ───────────────────────────────────────────────────────
+/**
+ * Gọi API một cách an toàn, tự động prefix base URL.
+ *
+ * @param endpoint - Đường dẫn bắt đầu bằng "/", ví dụ "/blogs?page=1"
+ * @param options  - RequestInit bình thường (method, body, headers, ...)
+ *
+ * BE trả về bọc trong { data: ... } hoặc không, hàm này đều xử lý được:
+ *   - { data: T }  → trả về T
+ *   - T trực tiếp  → trả về T
+ */
+export async function apiClient<T = unknown>(
+    endpoint: string,
+    options?: RequestInit
+): Promise<T> {
+    const url = `${API_BASE_URL}${endpoint}`;
+
+    const res = await fetch(url, {
+        credentials: "include",            // gửi cookie httpOnly (session)
+        headers: {
+            ...DEFAULT_HEADERS,
+            ...(options?.headers ?? {}),
+        },
+        ...options,
+    });
+
+    const json = await res.json().catch(() => null);
+
+    if (!res.ok) {
+        throw new ApiError(
+            json?.message ?? `HTTP ${res.status}`,
+            res.status,
+            json?.errorCode,
+            json?.errors
+        );
+    }
+
+    // Unwrap { data: T } nếu BE bọc lại
+    return (json?.data !== undefined ? json.data : json) as T;
+}
+
+// ─── Helpers ───────────────────────────────────────────────────────────────────
+/** Tạo query string từ object, bỏ qua các giá trị undefined/null/rỗng */
+export function buildQuery(
+    params: Record<string, string | number | boolean | undefined | null>
+): string {
+    const qs = new URLSearchParams();
+    for (const [key, val] of Object.entries(params)) {
+        if (val !== undefined && val !== null && val !== "") {
+            qs.set(key, String(val));
+        }
+    }
+    const str = qs.toString();
+    return str ? `?${str}` : "";
+}

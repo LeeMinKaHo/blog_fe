@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Foxtek Blog Frontend (Next.js)
 
-## Getting Started
+Dự án Frontend cho nền tảng Foxtek Blog, được xây dựng bằng **Next.js (App Router)** kết hợp với **Tailwind CSS**. Dự án cung cấp giao diện người dùng hiện đại, tốc độ cao và thân thiện, kết nối trực tiếp với backend NestJS.
 
-First, run the development server:
+## 🚀 Công nghệ sử dụng
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Framework:** [Next.js](https://nextjs.org/) (App Router)
+- **Ngôn ngữ:** TypeScript
+- **Styling:** Tailwind CSS
+- **State Management & Data Fetching:** React Query (@tanstack/react-query)
+- **Icons:** Lucide React
+- **Package Manager:** `pnpm`
+
+## ✨ Tính năng nổi bật
+
+- **Kiến trúc linh hoạt:** Sử dụng Next.js App Router, chia tách Server Components và Client Components để tối ưu SEO và hiệu suất.
+- **Tìm kiếm & Lọc:** Tìm kiếm bài viết theo từ khóa và lọc theo danh mục ngay trên thanh điều hướng hoặc sidebar.
+- **Xác thực người dùng:** Đăng nhập, đăng ký tài khoản mới và luồng xác thực mã OTP.
+- **Giao diện hiện đại (UI/UX):** 
+  - Toast notifications được custom đẹp mắt và mượt mà.
+  - Sidebar phong phú với các widget: Top Trending, Danh mục, Newsletter.
+  - Loading skeletons và Transition state mượt mà.
+- **Trang Quản trị (Admin):** Quản lý bài viết (thêm, sửa, xóa) với dữ liệu thực từ backend.
+- **API Client:** Hệ thống `apiClient.ts` custom giúp quản lý base URL, xử lý tự động cookie, middleware lỗi và token.
+
+## 📂 Cấu trúc thư mục chính
+
+```text
+blog_fe/
+├── app/
+│   ├── admin/         # Giao diện quản trị (ví dụ: quản lý bài viết)
+│   ├── blogs/         # Trang danh sách bài viết & chi tiết
+│   ├── login/         # Trang đăng nhập
+│   ├── register/      # Trang đăng ký
+│   ├── hooks/         # Custom React hooks (useSearch, ...)
+│   ├── lib/           # Utilities (apiClient.ts, utils, ...)
+│   ├── providers.tsx  # Global Providers (React Query, Toast, ...)
+│   └── services/      # Các service gọi API (authService, blogService, ...)
+├── components/        # Các UI Components dùng chung (Header, Sidebar, BlogCard, Toast, ...)
+├── public/            # Assets tĩnh (hình ảnh, favicon, ...)
+└── tailwind.config.ts # Cấu hình giao diện Tailwind
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ⚙️ Yêu cầu môi trường
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Node.js**: Phiên bản 18+ trở lên.
+- **pnpm**: Cài đặt thông qua npm (`npm install -g pnpm`).
+- Backend **blog_be** (NestJS) đang được chạy.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Hướng dẫn cài đặt và khởi chạy
 
-## Learn More
+**Bước 1: Clone dự án và cài đặt dependencies**
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+cd blog_fe
+pnpm install
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Bước 2: Cấu hình biến môi trường**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Tạo một file `.env.local` ở thư mục gốc của dự án và khai báo đường dẫn tới API Backend:
 
-## Deploy on Vercel
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
+> *(Thay đổi port nếu backend NestJS của bạn đang chạy ở port khác)*
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Bước 3: Chạy môi trường phát triển (Development)**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+pnpm dev
+```
+Mở trình duyệt và truy cập `http://localhost:3001` (hoặc port được cấp nếu 3001 đã bị chiếm).
+
+**Bước 4: Build cho môi trường Production**
+
+```bash
+pnpm build
+pnpm start
+```
+
+## 📜 Quy ước code
+
+- **Services:** Tất cả các lệnh gọi API phải được định nghĩa trong thư mục `app/services/` và sử dụng `apiClient` từ `app/lib/apiClient.ts`.
+- **UI Components:** Chỉ chứa logic hiển thị. Logic lấy dữ liệu nên được đưa vào Hooks hoặc đẩy lên page component.
+
+---
+*Created with ❤️ for Foxtek Community*
