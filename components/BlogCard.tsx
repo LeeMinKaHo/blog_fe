@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Eye } from "lucide-react";
+
 export default function BlogCard({ post }: { post: any }) {
    return (
       <Link href={`/blogs/${post.id}`}>
@@ -21,16 +23,23 @@ export default function BlogCard({ post }: { post: any }) {
                <p className="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-3 font-body">
                   {post.description || "No description available."}
                </p>
-               {/* author block */}
-               <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
-                     <span className="text-[10px] font-bold text-blue-600">
-                        {(post.author?.[0] || "A").toUpperCase()}
+               {/* author + views */}
+               <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                     <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                        <span className="text-[10px] font-bold text-blue-600">
+                           {(post.author?.[0] || "A").toUpperCase()}
+                        </span>
+                     </div>
+                     <span className="text-gray-500 text-xs font-medium">
+                        {post.author || "Unknown Author"}
                      </span>
                   </div>
-                  <span className="text-gray-500 text-xs font-medium">
-                     {post.author || "Unknown Author"}
-                  </span>
+                  {/* Lượt xem */}
+                  <div className="flex items-center gap-1 text-gray-400 text-xs">
+                     <Eye size={13} />
+                     <span>{(post.views ?? 0).toLocaleString("vi-VN")}</span>
+                  </div>
                </div>
             </div>
          </div>

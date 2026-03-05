@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, Save, Send, Image as ImageIcon, Sparkles, Plus } from "lucide-react";
+import { ChevronLeft, Save, Send, Image as ImageIcon, Sparkles } from "lucide-react";
 import Link from "next/link";
 import BlogEditor from "@/components/editor/BlogEditor";
 import { AuthGuard } from "@/components/AuthGuard";
+import { apiClient } from "@/app/lib/apiClient";
+import ImageUploader from "@/components/editor/ImageUploader";
 
 export default function CreateBlogPage() {
     const router = useRouter();
@@ -22,12 +24,25 @@ export default function CreateBlogPage() {
         }
 
         setIsSubmitting(true);
-        // Simulate API call
-        setTimeout(() => {
-            setIsSubmitting(false);
-            alert("Bài viết đã được đăng thành công (Mock)!");
+        try {
+            await apiClient("/blogs", {
+                method: "POST",
+                body: JSON.stringify({
+                    title,
+                    content,
+                    description: description || "Không có mô tả", // or something similar
+                    thumbnail: thumbnail || "",
+                    categoryId: 1 // hardcoded for now or we could add a selector
+                }),
+            });
+            alert("Bài viết đã được đăng thành công!");
             router.push("/blogs");
-        }, 1500);
+        } catch (error: any) {
+            console.error("Lỗi đăng bài:", error);
+            alert("Lỗi khi đăng bài: " + error.message);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -97,25 +112,17 @@ export default function CreateBlogPage() {
                                 <ImageIcon size={18} className="text-blue-500" />
                                 Ảnh bìa (Thumbnail)
                             </h3>
-                            <div className="space-y-4">
-                                <div className="relative aspect-video bg-gray-50 rounded-xl overflow-hidden border border-dashed border-gray-300 group">
-                                    {thumbnail ? (
-                                        <img src={thumbnail} className="w-full h-full object-cover" alt="Preview" />
-                                    ) : (
-                                        <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
-                                            <ImageIcon size={32} className="mb-2" />
-                                            <span className="text-xs font-bold">Chưa có ảnh</span>
-                                        </div>
-                                    )}
-                                </div>
-                                <input
-                                    type="text"
-                                    value={thumbnail}
-                                    onChange={(e) => setThumbnail(e.target.value)}
-                                    placeholder="Dán URL ảnh vào đây..."
-                                    className="w-full text-sm px-4 py-2.5 rounded-xl border border-gray-100 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                />
-                            </div>
+                            <ImageUploader
+                                currentUrl={thumbnail || undefined}
+                                onUpload={(result) => setThumbnail(result.url)}
+                                placeholder="Kéo thả hoặc click để tải ảnh bìa"
+                                aspect="video"
+                            />
+                            {thumbnail && (
+                                <p className="mt-2 text-xs text-gray-400 truncate" title={thumbnail}>
+                                    ✓ {thumbnail.split("/").pop()}
+                                </p>
+                            )}
                         </div>
 
                         <div className="bg-blue-600 rounded-2xl p-6 text-white shadow-xl shadow-blue-200 relative overflow-hidden">

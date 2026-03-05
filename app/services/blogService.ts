@@ -16,19 +16,25 @@ export interface BlogAuthor {
     avatar?: string;
 }
 
+export type BlogStatus = "Pushlish" | "Draft" | "Delete";
+
 export interface Blog {
     id: number;
     title: string;
     descrtiption?: string; // typo giữ nguyên theo BE
+    description?: string;
+    content?: string;
     thumbnail?: string;
-    status: "ACTIVE" | "INACTIVE" | "DELETE";
+    status: BlogStatus;
+    views?: number;
     category?: Category;
     createdBy?: BlogAuthor;
     updatedBy?: BlogAuthor;
     createdAt?: string;
     updatedAt?: string;
-    viewCount?: number;
+    authorId?: number;
 }
+
 
 export interface PaginationMeta {
     total: number;
@@ -44,10 +50,13 @@ export interface PaginatedBlogs {
 
 export interface CreateBlogPayload {
     title: string;
-    descrtiption: string;
+    description?: string;
+    descrtiption?: string;
     thumbnail?: string;
-    categoryId: number;
+    categoryId?: number;
+    status?: BlogStatus;
 }
+
 
 // ─── Queries ──────────────────────────────────────────────────────────────────
 
@@ -66,6 +75,8 @@ export async function getBlogs(params?: {
     });
     return apiClient<PaginatedBlogs>(`/blogs${qs}`);
 }
+
+
 
 /** Lấy toàn bộ danh sách categories để dùng cho filter */
 export async function getCategories(): Promise<Category[]> {
@@ -119,15 +130,41 @@ export async function getSeenBlogs(page = 1, limit = 10): Promise<PaginatedBlogs
     return apiClient<PaginatedBlogs>(`/blogs/seen-blogs${buildQuery({ page, limit })}`);
 }
 
-/** Lưu / bỏ lưu bài viết */
-export async function toggleSaveBlog(postId: number): Promise<void> {
-    return apiClient<void>("/blogs/saved-blog", {
+/** Lưu / bỏ lưu bài viết (toggle: POST sẽ add nếu chưa có, xóa nếu đã có) */
+export async function toggleSaveBlog(postId: number): Promise<{ saved: boolean; message: string }> {
+    return apiClient<{ saved: boolean; message: string }>("/blogs/saved-blog", {
         method: "POST",
         body: JSON.stringify({ postId }),
+    });
+}
+
+/** Xóa bài viết khỏi danh sách đã lưu */
+export async function removeSavedBlog(postId: number): Promise<void> {
+    return apiClient<void>(`/blogs/saved-blog/${postId}`, {
+        method: "DELETE",
     });
 }
 
 /** Lấy danh sách bài viết đã lưu */
 export async function getSavedBlogs(page = 1, limit = 10): Promise<PaginatedBlogs> {
     return apiClient<PaginatedBlogs>(`/blogs/saved-blogs${buildQuery({ page, limit })}`);
+}
+
+/** Tăng lượt xem bài viết (gọi khi user cuộn qua 50% nội dung) */
+export async function incrementBlogViews(id: number | string): Promise<{ views: number }> {
+    return apiClient<{ views: number }>(`/blogs/${id}/view`, {
+        method: "POST",
+    });
+}
+
+/** Lấy danh sách bài viết của chính user đang đăng nhập */
+export async function getMyBlogs(params?: {
+    page?: number;
+    limit?: number;
+}): Promise<PaginatedBlogs> {
+    const qs = buildQuery({
+        page: params?.page ?? 1,
+        limit: params?.limit ?? 10,
+    });
+    return apiClient<PaginatedBlogs>(`/blogs/my-blogs${qs}`);
 }

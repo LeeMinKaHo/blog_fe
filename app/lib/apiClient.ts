@@ -73,8 +73,13 @@ export async function apiClient<T = unknown>(
         );
     }
 
-    // Unwrap { data: T } nếu BE bọc lại
-    return (json?.data !== undefined ? json.data : json) as T;
+    // ResponseInterceptor của BE bọc TẤT CẢ trong { statusCode, message, data: T }
+    // Nếu json.data tồn tại → unwrap
+    if (json !== null && typeof json === "object" && "data" in json) {
+        return json.data as T;
+    }
+
+    return json as T;
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────

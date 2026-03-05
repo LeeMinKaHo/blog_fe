@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getBlogs, getCategories, Blog, Category } from "@/app/services/blogService";
 import BlogCard from "@/components/BlogCard";
 import SideBar from "@/components/Sidebar";
+import Pagination from "@/components/Pagination";
 
 // ─── Sort options ──────────────────────────────────────────────────────────────
 const SORT_OPTIONS = [
@@ -278,51 +279,12 @@ export default function BlogsPageClient({
                     </div>
 
                     {/* ── Pagination ────────────────────────────────────────────────────── */}
-                    {totalPages > 1 && (
-                        <div className="mt-8 flex items-center justify-between">
-                            <p className="text-xs text-gray-400 font-medium">
-                                Trang {page} / {totalPages} · {total} bài viết
-                            </p>
-
-                            <div className="flex items-center gap-1.5">
-                                {/* Prev */}
-                                <button
-                                    disabled={page <= 1}
-                                    onClick={() => handlePageChange(page - 1)}
-                                    className="p-2 rounded-xl border border-gray-200 text-gray-500 hover:bg-white hover:text-blue-600 hover:border-blue-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                                >
-                                    <ChevronLeft size={18} />
-                                </button>
-
-                                {/* Page numbers */}
-                                {getPageNumbers(page, totalPages).map((p, i) =>
-                                    p === "..." ? (
-                                        <span key={`dots-${i}`} className="px-2 text-gray-400 text-sm">…</span>
-                                    ) : (
-                                        <button
-                                            key={p}
-                                            onClick={() => handlePageChange(p as number)}
-                                            className={`w-9 h-9 rounded-xl text-sm font-bold transition-all border ${page === p
-                                                ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-100"
-                                                : "bg-white text-gray-600 border-gray-200 hover:border-blue-200 hover:text-blue-600"
-                                                }`}
-                                        >
-                                            {p}
-                                        </button>
-                                    )
-                                )}
-
-                                {/* Next */}
-                                <button
-                                    disabled={page >= totalPages}
-                                    onClick={() => handlePageChange(page + 1)}
-                                    className="p-2 rounded-xl border border-gray-200 text-gray-500 hover:bg-white hover:text-blue-600 hover:border-blue-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                                >
-                                    <ChevronRight size={18} />
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                    <Pagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        totalItems={total}
+                        onPageChange={handlePageChange}
+                    />
                 </div>
 
                 {/* Sidebar */}
@@ -332,17 +294,5 @@ export default function BlogsPageClient({
             </div>
         </div>
     );
-}
 
-// ─── Helper: tính dãy số trang hiển thị ─────────────────────────────────────
-function getPageNumbers(current: number, total: number): (number | "...")[] {
-    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
-    const pages: (number | "...")[] = [1];
-    if (current > 3) pages.push("...");
-    for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) {
-        pages.push(i);
-    }
-    if (current < total - 2) pages.push("...");
-    pages.push(total);
-    return pages;
 }

@@ -1,8 +1,9 @@
-import { Calendar, ChevronLeft, Clock, User } from "lucide-react";
+import { Calendar, ChevronLeft, Clock, Eye, User } from "lucide-react";
 import Link from "next/link";
 import { getPostById } from "../../lib/api";
 import CommentSection from "./CommentSection";
 import SavePostButton from "@/components/SavePostButton";
+import ViewTracker from "@/components/ViewTracker";
 
 interface BlogDetailProps {
    params: {
@@ -47,19 +48,31 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
                {/* Metadata (Thông tin thêm) */}
                <div className="flex flex-wrap justify-center items-center gap-6 text-gray-500 text-sm font-medium">
                   <div className="flex items-center gap-1">
-                     <User size={16} className="text-blue-500" /> <span>{post.author || "Admin"}</span>
+                     <User size={16} className="text-blue-500" /> <span>{post.createdBy?.name || "Admin"}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                     <Calendar size={16} className="text-blue-500" /> <span>25 Tháng 12, 2023</span>
+                     <Calendar size={16} className="text-blue-500" />
+                     <span>
+                        {post.createdAt
+                           ? new Date(post.createdAt).toLocaleDateString("vi-VN", {
+                              day: "2-digit",
+                              month: "long",
+                              year: "numeric",
+                           })
+                           : "Chưa rõ"}
+                     </span>
                   </div>
                   <div className="flex items-center gap-1">
                      <Clock size={16} className="text-blue-500" /> <span>5 phút đọc</span>
                   </div>
+                  {/* Số lượt xem (hiển thị tĩnh ban đầu) */}
+                  <div className="flex items-center gap-1">
+                     <Eye size={16} className="text-blue-500" />
+                     <span>{(post.views ?? 0).toLocaleString("vi-VN")} lượt xem</span>
+                  </div>
                   {/* Nút Lưu bài viết */}
                   <SavePostButton postId={id} />
                </div>
-
-
             </div>
          </header>
 
@@ -79,11 +92,19 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
                {post.description}
             </p>
 
+            {/*
+              ── ViewTracker Sentinel ──
+              Đặt ở giữa nội dung bài viết.
+              Khi user cuộn tới đây (≈ 50% bài), Intersection Observer sẽ kích hoạt API tăng view.
+            */}
+            <ViewTracker postId={Number(id)} initialViews={post.views ?? 0} />
+
             {/* Nội dung chính từ HTML */}
             <div
                className="content-rich-text"
-               dangerouslySetInnerHTML={{ __html: post.content }}
+               dangerouslySetInnerHTML={{ __html: post.content ?? "" }}
             />
+
          </div>
          <CommentSection postId={Number(id)} />
          {/* Footer bài viết - Tag hoặc Share (tùy chọn) */}

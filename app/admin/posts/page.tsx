@@ -17,6 +17,7 @@ import {
 import Link from "next/link";
 import { getBlogs, deleteBlog, Blog } from "@/app/services/blogService";
 import { useToast } from "@/components/toast";
+import Pagination from "@/components/Pagination";
 
 const STATUS_STYLE: Record<string, string> = {
     ACTIVE: "bg-green-100 text-green-700",
@@ -225,39 +226,13 @@ export default function AdminPostsPage() {
                     </table>
                 </div>
 
-                {/* Pagination */}
-                <div className="p-8 border-t border-gray-50 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50/30">
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                        Hiển thị {posts.length} / {total} bài viết
-                    </p>
-                    <div className="flex items-center gap-2">
-                        <button
-                            disabled={page <= 1}
-                            onClick={() => setPage((p) => p - 1)}
-                            className="p-2 rounded-xl text-gray-400 hover:bg-white hover:text-gray-900 border border-transparent hover:border-gray-100 transition-all disabled:opacity-30"
-                        >
-                            <ChevronLeft size={20} />
-                        </button>
-                        {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((p) => (
-                            <button
-                                key={p}
-                                onClick={() => setPage(p)}
-                                className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${page === p
-                                    ? "bg-blue-600 text-white shadow-lg shadow-blue-100"
-                                    : "text-gray-500 hover:bg-white hover:text-blue-600 border border-transparent hover:border-gray-100"
-                                    }`}
-                            >
-                                {p}
-                            </button>
-                        ))}
-                        <button
-                            disabled={page >= totalPages}
-                            onClick={() => setPage((p) => p + 1)}
-                            className="p-2 rounded-xl text-gray-400 hover:bg-white hover:text-gray-900 border border-transparent hover:border-gray-100 transition-all disabled:opacity-30"
-                        >
-                            <ChevronRight size={20} />
-                        </button>
-                    </div>
+                <div className="px-8 pb-8">
+                    <Pagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        totalItems={total}
+                        onPageChange={(p) => setPage(p)}
+                    />
                 </div>
             </div>
         </div>

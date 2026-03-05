@@ -7,6 +7,8 @@ import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import Youtube from "@tiptap/extension-youtube";
 import Placeholder from "@tiptap/extension-placeholder";
+import { useRef, useState } from "react";
+import { API_BASE_URL } from "@/app/lib/apiClient";
 import {
     Bold, Italic, Underline as UnderlineIcon,
     Link as LinkIcon, Image as ImageIcon,
@@ -21,6 +23,8 @@ interface BlogEditorProps {
 
 const MenuBar = ({ editor }: { editor: any }) => {
     if (!editor) return null;
+    const imageInputRef = useRef<HTMLInputElement>(null);
+    const [isUploading, setIsUploading] = useState(false);
 
     const addLink = () => {
         const url = window.prompt("Nhập địa chỉ Link:");
@@ -29,10 +33,24 @@ const MenuBar = ({ editor }: { editor: any }) => {
         }
     };
 
-    const addImage = () => {
-        const url = window.prompt("Nhập URL hình ảnh:");
-        if (url) {
+    const addImage = async (file: File) => {
+        setIsUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            const res = await fetch(`${API_BASE_URL}/files/upload`, {
+                method: "POST",
+                credentials: "include",
+                body: formData,
+            });
+            if (!res.ok) throw new Error("Upload thất bại");
+            const { url } = await res.json();
             editor.chain().focus().setImage({ src: url }).run();
+        } catch (err) {
+            console.error("Upload ảnh thất bại:", err);
+            alert("Không thể tải ảnh lên. Vui lòng thử lại!");
+        } finally {
+            setIsUploading(false);
         }
     };
 
@@ -118,12 +136,28 @@ const MenuBar = ({ editor }: { editor: any }) => {
                 <LinkIcon size={18} />
             </button>
             <button
-                onClick={addImage}
-                className="p-2 rounded-lg transition-colors hover:bg-gray-200"
-                title="Thêm hình ảnh"
+                onClick={() => imageInputRef.current?.click()}
+                disabled={isUploading}
+                className={`p-2 rounded-lg transition-colors hover:bg-gray-200 relative ${isUploading ? "opacity-50" : ""}`}
+                title="Tải ảnh lên"
             >
-                <ImageIcon size={18} />
+                {isUploading ? (
+                    <div className="w-[18px] h-[18px] border-2 border-gray-400 border-t-blue-500 rounded-full animate-spin" />
+                ) : (
+                    <ImageIcon size={18} />
+                )}
             </button>
+            <input
+                ref={imageInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) addImage(file);
+                    e.target.value = "";
+                }}
+            />
             <button
                 onClick={addYoutubeVideo}
                 className="p-2 rounded-lg transition-colors hover:bg-gray-200"

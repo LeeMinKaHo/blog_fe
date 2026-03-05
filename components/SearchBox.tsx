@@ -178,7 +178,10 @@ export default function SearchBox() {
           {/* Error */}
           {!isLoading && error && (
             <div style={{ padding: "20px", textAlign: "center", color: "#ef4444", fontSize: "13px" }}>
-              {error}
+              <div>{error}</div>
+              <div style={{ marginTop: "4px", fontSize: "11px", color: "#9ca3af" }}>
+                Kiểm tra kết nối đến backend (localhost:3000)
+              </div>
             </div>
           )}
 

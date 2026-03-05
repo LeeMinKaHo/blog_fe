@@ -3,7 +3,7 @@ export interface Comment {
   id: number;
   content: string;
   postId: number;
-  totalLike: number;
+  totalLike?: number;
   parentId?: number;
   createdAt: string;
   user: {

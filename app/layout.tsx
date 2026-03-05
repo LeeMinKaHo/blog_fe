@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Providers from "./providers";
 import { inter, playfair } from "./font";
+import VerificationBannerWrapper from "@/components/VerificationBannerWrapper";
 
 export const metadata = {
   title: "My Blog",
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <Providers>
           <Header />
+          <VerificationBannerWrapper />
 
           <main className="flex-1 max-w-5xl mx-auto w-full ">
             {children}

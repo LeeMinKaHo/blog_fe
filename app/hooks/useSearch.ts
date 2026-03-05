@@ -24,7 +24,8 @@ export function useSearch(keyword: string, delay = 350) {
             try {
                 const res = await getBlogs({ search: trimmed, limit: 8 });
                 setResults(res.data ?? []);
-            } catch {
+            } catch (err) {
+                console.error("[useSearch] Lỗi khi tìm kiếm:", err);
                 setError("Không thể tìm kiếm, vui lòng thử lại.");
                 setResults([]);
             } finally {

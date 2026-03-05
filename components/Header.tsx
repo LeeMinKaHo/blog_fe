@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/app/lib/api";
 import { useMe } from "@/app/hooks/useMe";
-import { User, LogOut, Settings, LayoutDashboard, ChevronDown, Plus, Shield } from "lucide-react";
+import { User, LogOut, Settings, LayoutDashboard, ChevronDown, Plus, Shield, Bookmark, FileText } from "lucide-react";
+
 import SearchBox from "@/components/SearchBox";
 
 export default function Header() {
@@ -65,13 +66,29 @@ export default function Header() {
                </Link>
 
                {user && (
-                  <Link
-                     href="/blogs/create"
-                     className="flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-blue-600 hover:text-white transition-all"
-                  >
-                     <Plus size={18} />
-                     Viết bài
-                  </Link>
+                  user.isVerified === false ? (
+                     <div className="relative group">
+                        <button
+                           disabled
+                           className="flex items-center gap-2 bg-gray-100 text-gray-400 px-4 py-2 rounded-xl text-sm font-bold cursor-not-allowed"
+                        >
+                           <Plus size={18} />
+                           Viết bài
+                        </button>
+                        {/* Tooltip */}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-gray-900 text-white text-xs rounded-xl px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 text-center leading-relaxed">
+                           Vui lòng xác thực email trước khi viết bài
+                        </div>
+                     </div>
+                  ) : (
+                     <Link
+                        href="/blogs/create"
+                        className="flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-blue-600 hover:text-white transition-all"
+                     >
+                        <Plus size={18} />
+                        Viết bài
+                     </Link>
+                  )
                )}
 
                {!isLoading && (
@@ -108,7 +125,24 @@ export default function Header() {
                                     <User size={16} className="text-gray-400" />
                                     Hồ sơ cá nhân
                                  </Link>
+                                 <Link
+                                    href="/saved-posts"
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                 >
+                                    <Bookmark size={16} className="text-gray-400" />
+                                    Bài viết đã lưu
+                                 </Link>
+                                 <Link
+                                    href="/my-posts"
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                 >
+                                    <FileText size={16} className="text-gray-400" />
+                                    Bài viết của tôi
+                                 </Link>
                                  {user.role === "Admin" && (
+
                                     <Link
                                        href="/admin"
                                        onClick={() => setIsMenuOpen(false)}
