@@ -25,8 +25,11 @@ export interface LoginPayload {
 }
 
 export interface LoginResponse {
-    message: string;
-    data: User;
+    id: number;
+    email: string;
+    name: string;
+    role: "Admin" | "User" | "Moderator";
+    isVerified: boolean;
 }
 
 // ─── Auth APIs ────────────────────────────────────────────────────────────────

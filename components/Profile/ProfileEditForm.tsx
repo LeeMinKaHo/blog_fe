@@ -1,15 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { UserProfile } from "./profile.type";
-import { Save, X } from "lucide-react";
-
-interface ProfileFormState {
-   name: string;
-   phone: string;
-   address: string;
-   gender: string;
-}
+import { UserProfile, UpdateProfilePayload, updateProfile } from "@/app/services/userService";
+import { Save, X, Loader2 } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface ProfileEditFormProps {
    user: UserProfile;
@@ -18,62 +12,86 @@ interface ProfileEditFormProps {
 }
 
 export function ProfileEditForm({ user, onCancel, onSuccess }: ProfileEditFormProps) {
-   const [form, setForm] = useState<ProfileFormState>({
+   const qc = useQueryClient();
+   const [form, setForm] = useState<UpdateProfilePayload>({
       name: user.user.name ?? "",
       phone: user.phone ?? "",
       address: user.address ?? "",
       gender: user.gender ?? "",
+      birthday: user.birthday
+         ? user.birthday.split("T")[0]  // "2000-01-15T..." → "2000-01-15"
+         : "",
    });
-   const [loading, setLoading] = useState(false);
+   const [error, setError] = useState("");
 
-   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      setLoading(true);
-
-      // Simulate API call
-      setTimeout(() => {
-         setLoading(false);
+   const { mutate: save, isPending } = useMutation({
+      mutationFn: () => updateProfile(form),
+      onSuccess: (updatedProfile) => {
+         // Cập nhật cache với data mới
+         qc.setQueryData(["profile"], updatedProfile);
+         qc.invalidateQueries({ queryKey: ["profile"] });
+         setError("");
          onSuccess();
-      }, 1000);
+      },
+      onError: (err: any) => {
+         setError(err?.message ?? "Có lỗi xảy ra, vui lòng thử lại");
+      },
+   });
+
+   const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      setError("");
+      if (!form.name?.trim()) {
+         setError("Tên không được để trống");
+         return;
+      }
+      save();
    };
+
+   const inputClass = "w-full bg-gray-50 border border-gray-100 px-4 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all font-medium text-gray-800 text-sm";
+   const labelClass = "text-[11px] font-bold text-gray-500 uppercase tracking-widest ml-1 mb-1 block";
 
    return (
       <form onSubmit={handleSubmit} className="space-y-6">
-         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-               <label className="text-xs font-bold text-gray-500 uppercase ml-1">Họ và tên</label>
+         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Tên */}
+            <div>
+               <label className={labelClass}>Họ và tên</label>
                <input
-                  className="w-full bg-gray-50 border border-gray-100 px-4 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-medium text-gray-800"
+                  className={inputClass}
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="Nhập họ và tên"
                />
             </div>
 
-            <div className="space-y-2">
-               <label className="text-xs font-bold text-gray-500 uppercase ml-1">Số điện thoại</label>
+            {/* SĐT */}
+            <div>
+               <label className={labelClass}>Số điện thoại</label>
                <input
-                  className="w-full bg-gray-50 border border-gray-100 px-4 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-medium text-gray-800"
+                  className={inputClass}
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                   placeholder="Nhập số điện thoại"
                />
             </div>
 
-            <div className="space-y-2 md:col-span-2">
-               <label className="text-xs font-bold text-gray-500 uppercase ml-1">Địa chỉ</label>
+            {/* Địa chỉ */}
+            <div className="md:col-span-2">
+               <label className={labelClass}>Địa chỉ</label>
                <input
-                  className="w-full bg-gray-50 border border-gray-100 px-4 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-medium text-gray-800"
+                  className={inputClass}
                   value={form.address}
                   onChange={(e) => setForm({ ...form, address: e.target.value })}
                   placeholder="Nhập địa chỉ của bạn"
                />
             </div>
 
-            <div className="space-y-2">
-               <label className="text-xs font-bold text-gray-500 uppercase ml-1">Giới tính</label>
+            {/* Giới tính */}
+            <div>
+               <label className={labelClass}>Giới tính</label>
                <select
-                  className="w-full bg-gray-50 border border-gray-100 px-4 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-medium text-gray-800 appearance-none cursor-pointer"
+                  className={inputClass + " cursor-pointer appearance-none"}
                   value={form.gender}
                   onChange={(e) => setForm({ ...form, gender: e.target.value })}
                >
@@ -83,23 +101,42 @@ export function ProfileEditForm({ user, onCancel, onSuccess }: ProfileEditFormPr
                   <option value="OTHER">Khác</option>
                </select>
             </div>
+
+            {/* Ngày sinh */}
+            <div>
+               <label className={labelClass}>Ngày sinh</label>
+               <input
+                  type="date"
+                  className={inputClass}
+                  value={form.birthday as string}
+                  onChange={(e) => setForm({ ...form, birthday: e.target.value })}
+               />
+            </div>
          </div>
 
-         <div className="flex gap-4 pt-4">
+         {/* Error */}
+         {error && (
+            <p className="text-sm text-red-500 bg-red-50 px-4 py-3 rounded-xl border border-red-100">
+               {error}
+            </p>
+         )}
+
+         {/* Actions */}
+         <div className="flex gap-4 pt-2">
             <button
                type="submit"
-               disabled={loading}
-               className="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all active:scale-[0.98] disabled:opacity-50"
+               disabled={isPending}
+               className="flex-1 bg-blue-600 text-white py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all active:scale-[0.98] disabled:opacity-50"
             >
-               <Save size={18} />
-               {loading ? "Đang lưu..." : "Lưu thay đổi"}
+               {isPending ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+               {isPending ? "Đang lưu..." : "Lưu thay đổi"}
             </button>
 
             <button
                type="button"
-               disabled={loading}
+               disabled={isPending}
                onClick={onCancel}
-               className="flex-1 bg-gray-100 text-gray-700 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-gray-200 transition-all active:scale-[0.98]"
+               className="flex-1 bg-gray-100 text-gray-700 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-gray-200 transition-all active:scale-[0.98]"
             >
                <X size={18} />
                Hủy

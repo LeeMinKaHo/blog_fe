@@ -18,8 +18,13 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await login({ email, password });
-      toast.success(res.message ?? "Đăng nhập thành công!");
-      router.push("/blogs");
+      toast.success("Đăng nhập thành công!");
+      // apiClient đã unwrap json.data nên res chính là { id, email, name, role, isVerified }
+      if (res.role === "Admin" || res.role === "Moderator") {
+        router.push("/admin");
+      } else {
+        router.push("/blogs");
+      }
     } catch (err: any) {
       toast.error(err?.message ?? "Đăng nhập thất bại");
     } finally {
