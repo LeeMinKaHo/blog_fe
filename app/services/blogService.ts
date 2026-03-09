@@ -27,6 +27,7 @@ export interface Blog {
     thumbnail?: string;
     status: BlogStatus;
     views?: number;
+    totalLikes?: number;
     category?: Category;
     createdBy?: BlogAuthor;
     updatedBy?: BlogAuthor;
@@ -156,6 +157,16 @@ export async function incrementBlogViews(id: number | string): Promise<{ views: 
         method: "POST",
     });
 }
+
+
+/** Like / Unlike bài viết */
+export async function toggleLikeBlog(postId: number): Promise<{ liked: boolean; totalLikes: number }> {
+    return apiClient<{ liked: boolean; totalLikes: number }>("/blogs/like-blog", {
+        method: "POST",
+        body: JSON.stringify({ postId }),
+    });
+}
+
 
 /** Lấy danh sách bài viết của chính user đang đăng nhập */
 export async function getMyBlogs(params?: {

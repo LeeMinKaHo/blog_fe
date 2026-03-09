@@ -3,7 +3,9 @@ import Link from "next/link";
 import { getPostById } from "../../lib/api";
 import CommentSection from "./CommentSection";
 import SavePostButton from "@/components/SavePostButton";
+import LikePostButton from "@/components/LikePostButton";
 import ViewTracker from "@/components/ViewTracker";
+
 
 interface BlogDetailProps {
    params: {
@@ -70,8 +72,11 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
                      <Eye size={16} className="text-blue-500" />
                      <span>{(post.views ?? 0).toLocaleString("vi-VN")} lượt xem</span>
                   </div>
+                  {/* Nút Like bài viết */}
+                  <LikePostButton postId={id} initialLikes={post.totalLikes ?? 0} />
                   {/* Nút Lưu bài viết */}
                   <SavePostButton postId={id} />
+
                </div>
             </div>
          </header>
