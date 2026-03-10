@@ -8,6 +8,8 @@ import { useMe } from "@/app/hooks/useMe";
 import { User, LogOut, Settings, LayoutDashboard, ChevronDown, Plus, Shield, Bookmark, FileText } from "lucide-react";
 
 import SearchBox from "@/components/SearchBox";
+import NotificationBell from "@/components/NotificationBell";
+
 
 export default function Header() {
    const { data: user, isLoading } = useMe();
@@ -93,99 +95,104 @@ export default function Header() {
 
                {!isLoading && (
                   user ? (
-                     <div className="relative" ref={dropdownRef}>
-                        <button
-                           onClick={() => setIsMenuOpen(!isMenuOpen)}
-                           className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
-                        >
-                           <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-blue-500/20">
-                              <img
-                                 src={user.avatar || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"}
-                                 alt={user.name}
-                                 className="w-full h-full object-cover"
-                              />
-                           </div>
-                           <ChevronDown size={14} className={`text-gray-500 transition-transform ${isMenuOpen ? 'rotate-180' : ''}`} />
-                        </button>
+                     <div className="flex items-center gap-4">
+                        <NotificationBell />
+                        <div className="relative" ref={dropdownRef}>
+                           <button
+                              onClick={() => setIsMenuOpen(!isMenuOpen)}
 
-                        {/* Dropdown Menu */}
-                        {isMenuOpen && (
-                           <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 overflow-hidden animate-in fade-in zoom-in duration-200">
-                              <div className="px-4 py-3 border-b border-gray-50">
-                                 <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>
-                                 <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                              className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                           >
+                              <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-blue-500/20">
+                                 <img
+                                    src={user.avatar || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"}
+                                    alt={user.name}
+                                    className="w-full h-full object-cover"
+                                 />
                               </div>
+                              <ChevronDown size={14} className={`text-gray-500 transition-transform ${isMenuOpen ? 'rotate-180' : ''}`} />
+                           </button>
 
-                              <div className="py-1">
-                                 <Link
-                                    href="/profile"
-                                    onClick={() => setIsMenuOpen(false)}
-                                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                                 >
-                                    <User size={16} className="text-gray-400" />
-                                    Hồ sơ cá nhân
-                                 </Link>
-                                 <Link
-                                    href="/saved-posts"
-                                    onClick={() => setIsMenuOpen(false)}
-                                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                                 >
-                                    <Bookmark size={16} className="text-gray-400" />
-                                    Bài viết đã lưu
-                                 </Link>
-                                 <Link
-                                    href="/my-posts"
-                                    onClick={() => setIsMenuOpen(false)}
-                                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                                 >
-                                    <FileText size={16} className="text-gray-400" />
-                                    Bài viết của tôi
-                                 </Link>
-                                 {user.role === "Admin" && (
+                           {/* Dropdown Menu */}
+                           {isMenuOpen && (
+                              <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 overflow-hidden animate-in fade-in zoom-in duration-200">
+                                 <div className="px-4 py-3 border-b border-gray-50">
+                                    <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>
+                                    <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                                 </div>
 
+                                 <div className="py-1">
                                     <Link
-                                       href="/admin"
+                                       href="/profile"
                                        onClick={() => setIsMenuOpen(false)}
-                                       className="flex items-center gap-3 px-4 py-2 text-sm font-bold text-blue-600 hover:bg-blue-50 transition-colors"
+                                       className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                                     >
-                                       <Shield size={16} />
-                                       Trang quản trị
+                                       <User size={16} className="text-gray-400" />
+                                       Hồ sơ cá nhân
                                     </Link>
-                                 )}
-                                 <Link
-                                    href="/dashboard"
-                                    onClick={() => setIsMenuOpen(false)}
-                                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                                 >
-                                    <LayoutDashboard size={16} className="text-gray-400" />
-                                    Bảng điều khiển
-                                 </Link>
-                                 <Link
-                                    href="/settings"
-                                    onClick={() => setIsMenuOpen(false)}
-                                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                                 >
-                                    <Settings size={16} className="text-gray-400" />
-                                    Cài đặt
-                                 </Link>
-                              </div>
+                                    <Link
+                                       href="/saved-posts"
+                                       onClick={() => setIsMenuOpen(false)}
+                                       className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                    >
+                                       <Bookmark size={16} className="text-gray-400" />
+                                       Bài viết đã lưu
+                                    </Link>
+                                    <Link
+                                       href="/my-posts"
+                                       onClick={() => setIsMenuOpen(false)}
+                                       className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                    >
+                                       <FileText size={16} className="text-gray-400" />
+                                       Bài viết của tôi
+                                    </Link>
+                                    {user.role === "Admin" && (
 
-                              <div className="border-t border-gray-50 mt-1 pt-1">
-                                 <button
-                                    onClick={() => {
-                                       setIsMenuOpen(false);
-                                       logoutMutation.mutate();
-                                    }}
-                                    className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                                 >
-                                    <LogOut size={16} />
-                                    Đăng xuất
-                                 </button>
+                                       <Link
+                                          href="/admin"
+                                          onClick={() => setIsMenuOpen(false)}
+                                          className="flex items-center gap-3 px-4 py-2 text-sm font-bold text-blue-600 hover:bg-blue-50 transition-colors"
+                                       >
+                                          <Shield size={16} />
+                                          Trang quản trị
+                                       </Link>
+                                    )}
+                                    <Link
+                                       href="/dashboard"
+                                       onClick={() => setIsMenuOpen(false)}
+                                       className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                    >
+                                       <LayoutDashboard size={16} className="text-gray-400" />
+                                       Bảng điều khiển
+                                    </Link>
+                                    <Link
+                                       href="/settings"
+                                       onClick={() => setIsMenuOpen(false)}
+                                       className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                    >
+                                       <Settings size={16} className="text-gray-400" />
+                                       Cài đặt
+                                    </Link>
+                                 </div>
+
+                                 <div className="border-t border-gray-50 mt-1 pt-1">
+                                    <button
+                                       onClick={() => {
+                                          setIsMenuOpen(false);
+                                          logoutMutation.mutate();
+                                       }}
+                                       className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                                    >
+                                       <LogOut size={16} />
+                                       Đăng xuất
+                                    </button>
+                                 </div>
                               </div>
-                           </div>
-                        )}
+                           )}
+                        </div>
                      </div>
                   ) : (
+
                      <Link
                         href="/login"
                         className="rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 active:scale-95"

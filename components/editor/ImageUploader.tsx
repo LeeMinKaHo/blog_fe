@@ -62,25 +62,39 @@ export default function ImageUploader({
                     method: "POST",
                     credentials: "include",
                     body: formData,
-                    // Không set Content-Type vì browser tự set multipart/form-data + boundary
                 });
 
                 if (!res.ok) {
-                    const errJson = await res.json().catch(() => null);
-                    throw new Error(errJson?.message ?? `Upload thất bại (HTTP ${res.status})`);
+                    const errResponse = await res.text().catch(() => "");
+                    let errMsg = `Upload thất bại (HTTP ${res.status})`;
+                    try {
+                        const errJson = JSON.parse(errResponse);
+                        if (errJson.message) errMsg = errJson.message;
+                    } catch { }
+                    throw new Error(errMsg);
                 }
 
-                const result: UploadResult = await res.json();
-                setPreview(result.url);
+                const result = await res.json();
+                // BE bọc trong { data: { filename, url } }
+                const finalUrl = result?.data?.url || result?.url;
+
+                if (!finalUrl) {
+                    throw new Error("Không lấy được URL ảnh từ server");
+                }
+
+                setPreview(finalUrl);
                 setSuccess(true);
-                onUpload(result);
-                setTimeout(() => setSuccess(false), 2500);
+                onUpload({
+                    filename: result?.data?.filename || result?.filename || "",
+                    url: finalUrl
+                });
+                setTimeout(() => setSuccess(false), 2000);
             } catch (err: any) {
                 setError(err.message ?? "Đã xảy ra lỗi khi upload");
-                // giữ preview local vẫn hiển thị, chỉ báo lỗi
             } finally {
                 setIsUploading(false);
-                URL.revokeObjectURL(objectUrl);
+                // objectUrl sẽ được tự động dọn dẹp bởi browser khi không còn dùng hoặc khi revoke
+                // Ta có thể để browser tự quản lý hoặc revoke khi preview thay đổi
             }
         },
         [onUpload]
