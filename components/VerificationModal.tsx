@@ -103,7 +103,7 @@ export default function VerificationModal({
         <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50 p-4">
             <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
                 {/* Header gradient */}
-                <div className="bg-gradient-to-br from-blue-600 to-blue-500 px-8 pt-8 pb-10 text-center relative">
+                <div className="bg-gradient-to-br from-indigo-600 to-indigo-500 px-8 pt-8 pb-10 text-center relative">
                     <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                         {verified
                             ? <CheckCircle2 size={28} className="text-white" />
@@ -113,7 +113,7 @@ export default function VerificationModal({
                     <h2 className="text-xl font-bold text-white">
                         {verified ? "Xác thực thành công!" : "Xác nhận email"}
                     </h2>
-                    <p className="text-blue-100 text-sm mt-1">
+                    <p className="text-indigo-100 text-sm mt-1">
                         Mã OTP đã được gửi tới<br />
                         <strong className="text-white">{email}</strong>
                     </p>
@@ -153,8 +153,8 @@ export default function VerificationModal({
                                         onChange={(e) => handleDigitChange(i, e.target.value)}
                                         onKeyDown={(e) => handleKeyDown(i, e)}
                                         className={`w-11 h-14 text-center text-xl font-bold rounded-xl border-2 outline-none transition-all
-                                            ${d ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-200 bg-gray-50 text-gray-800"}
-                                            focus:border-blue-500 focus:bg-blue-50`}
+                                            ${d ? "border-indigo-500 bg-indigo-50 text-indigo-700" : "border-gray-200 bg-gray-50 text-gray-800"}
+                                            focus:border-indigo-500 focus:bg-indigo-50`}
                                     />
                                 ))}
                             </div>
@@ -164,7 +164,7 @@ export default function VerificationModal({
                                 <button
                                     onClick={handleVerify}
                                     disabled={loading || code.length < 6}
-                                    className="w-full py-3 rounded-xl bg-blue-600 text-white font-bold text-sm hover:bg-blue-700 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-100"
+                                    className="w-full py-3 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-100"
                                 >
                                     {loading
                                         ? (
@@ -180,7 +180,7 @@ export default function VerificationModal({
                                 <button
                                     onClick={handleResend}
                                     disabled={countdown > 0 || resending}
-                                    className="flex items-center justify-center gap-1.5 text-sm font-medium text-gray-500 hover:text-blue-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                    className="flex items-center justify-center gap-1.5 text-sm font-medium text-gray-500 hover:text-indigo-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                                 >
                                     <RefreshCw size={14} className={resending ? "animate-spin" : ""} />
                                     {countdown > 0

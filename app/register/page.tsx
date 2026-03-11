@@ -39,7 +39,7 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-100 via-blue-50 to-purple-100">
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
             <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6">
                 <h2 className="text-2xl font-bold text-gray-800 text-center">Đăng ký tài khoản</h2>
                 <form onSubmit={handleRegister} className="space-y-4">
@@ -50,7 +50,7 @@ export default function RegisterPage() {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             required
-                            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 focus:outline-none focus:border-green-500 transition"
+                            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
                         />
                     </div>
                     <div>
@@ -60,7 +60,7 @@ export default function RegisterPage() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
-                            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 focus:outline-none focus:border-green-500 transition"
+                            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
                         />
                     </div>
                     <div>
@@ -70,20 +70,20 @@ export default function RegisterPage() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 focus:outline-none focus:border-green-500 transition"
+                            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
                         />
                     </div>
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-2.5 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition disabled:opacity-50"
+                        className="w-full py-2.5 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition disabled:opacity-50"
                     >
                         {loading ? "Đang đăng ký..." : "Đăng ký"}
                     </button>
                 </form>
                 <p className="text-center text-sm text-gray-600">
                     Đã có tài khoản?{' '}
-                    <a href="/login" className="text-green-600 hover:underline">
+                    <a href="/login" className="text-indigo-600 hover:underline">
                         Đăng nhập ngay
                     </a>
                 </p>
