@@ -36,8 +36,7 @@ export default function CreateBlogPage() {
                         content,
                         description: description || "Không có mô tả",
                         thumbnail: thumbnail || "",
-                        categoryId: 1,
-                        type: "pushlish"
+                        categoryId: 1
                     }),
                 }),
                 {
@@ -50,42 +49,6 @@ export default function CreateBlogPage() {
             router.push("/blogs");
         } catch (error: any) {
             console.error("Lỗi đăng bài:", error);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    const handleSaveDraft = async () => {
-        if (!title) {
-            toast.warning("Vui lòng nhập tiêu đề bài viết để lưu nháp!");
-            return;
-        }
-
-        setIsSubmitting(true);
-
-        try {
-            await toast.promise(
-                apiClient("/blogs", {
-                    method: "POST",
-                    body: JSON.stringify({
-                        title,
-                        content: content || "",
-                        description: description || "Chưa có mô tả",
-                        thumbnail: thumbnail || "",
-                        categoryId: 1,
-                        type: "draft"
-                    }),
-                }),
-                {
-                    loading: "Đang lưu bản nháp...",
-                    success: "Bản nháp đã được lưu an toàn! 📝",
-                    error: (err) => `Lỗi: ${err.message}`
-                }
-            );
-
-            router.push("/blogs");
-        } catch (error: any) {
-            console.error("Lỗi lưu nháp:", error);
         } finally {
             setIsSubmitting(false);
         }
@@ -110,11 +73,7 @@ export default function CreateBlogPage() {
                     </div>
 
                     <div className="flex items-center gap-3 w-full sm:w-auto">
-                        <button
-                            onClick={handleSaveDraft}
-                            disabled={isSubmitting}
-                            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl border border-gray-200 font-bold text-sm text-gray-700 hover:bg-gray-50 transition-all disabled:opacity-50"
-                        >
+                        <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl border border-gray-200 font-bold text-sm text-gray-700 hover:bg-gray-50 transition-all">
                             <Save size={18} />
                             Lưu nháp
                         </button>
