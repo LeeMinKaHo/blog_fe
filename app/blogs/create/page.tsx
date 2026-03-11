@@ -57,7 +57,7 @@ export default function CreateBlogPage() {
 
     const handleSaveDraft = async () => {
         if (!title) {
-            toast.warning("Vui lòng nhập tiêu đề để lưu nháp!");
+            toast.warning("Vui lòng nhập tiêu đề bài viết để lưu nháp!");
             return;
         }
 
@@ -79,11 +79,11 @@ export default function CreateBlogPage() {
                 {
                     loading: "Đang lưu bản nháp...",
                     success: "Bản nháp đã được lưu an toàn! 📝",
-                    error: (err) => `Lỗi khi lưu nháp: ${err.message}`
+                    error: (err) => `Lỗi: ${err.message}`
                 }
             );
 
-            router.push("/blogs"); // Hoặc có thể ở lại trang này
+            router.push("/blogs");
         } catch (error: any) {
             console.error("Lỗi lưu nháp:", error);
         } finally {
