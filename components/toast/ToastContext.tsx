@@ -24,13 +24,18 @@ interface ToastContextValue {
     toasts: Toast[];
     toast: {
         success: (message: string, options?: ToastOptions) => string;
-        error: (message: string, options?: ToastOptions) => string;
+        error: (message: string, options?: ToastOptions | any) => string;
         warning: (message: string, options?: ToastOptions) => string;
         info: (message: string, options?: ToastOptions) => string;
         loading: (message: string, options?: ToastOptions) => string;
         dismiss: (id: string) => void;
-        /** Update an existing toast (e.g. loading → success after API call) */
         update: (id: string, patch: Partial<Omit<Toast, "id">>) => void;
+        /** 🔄 Handle a promise with loading, success, and error toasts automatically */
+        promise: <T>(
+            promise: Promise<T>,
+            msgs: { loading: string; success: string; error: string | ((err: any) => string) },
+            options?: ToastOptions
+        ) => Promise<T>;
     };
 }
 
@@ -86,25 +91,52 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                 prev.map((t) => (t.id === id ? { ...t, ...patch } : t))
             );
 
-            // If the updated toast now has a positive duration, start auto-dismiss
-            const duration = patch.duration;
-            if (duration && duration > 0) {
+            const duration = patch.duration ?? (patch.type === "loading" ? 0 : 4000);
+            if (duration > 0) {
                 setTimeout(() => remove(id), duration);
             }
         },
         [remove]
     );
 
+    const promise = useCallback(
+        async <T,>(
+            p: Promise<T>,
+            msgs: { loading: string; success: string; error: string | ((err: any) => string) },
+            options?: ToastOptions
+        ): Promise<T> => {
+            const id = add("loading", msgs.loading, { ...options, duration: 0 });
+            try {
+                const result = await p;
+                update(id, { type: "success", message: msgs.success, duration: 4000 });
+                return result;
+            } catch (err: any) {
+                const errorMsg = typeof msgs.error === "function" ? msgs.error(err) : msgs.error;
+                update(id, {
+                    type: "error",
+                    message: errorMsg || err.message || "Đã có lỗi xảy ra",
+                    duration: 5000
+                });
+                throw err;
+            }
+        },
+        [add, update]
+    );
+
     const value: ToastContextValue = {
         toasts,
         toast: {
             success: (msg, opts) => add("success", msg, opts),
-            error: (msg, opts) => add("error", msg, opts),
+            error: (msg, opts) => {
+                const message = typeof msg === "string" ? msg : (msg as any)?.message || "Lỗi không xác định";
+                return add("error", message, opts);
+            },
             warning: (msg, opts) => add("warning", msg, opts),
             info: (msg, opts) => add("info", msg, opts),
             loading: (msg, opts) => add("loading", msg, opts),
             dismiss: remove,
             update,
+            promise,
         },
     };
 

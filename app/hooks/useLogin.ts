@@ -2,10 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/app/lib/api";
 import { LoginPayload } from "@/app/types/auth";
+import { useToast } from "@/components/toast";
 
 export function useLogin() {
    const queryClient = useQueryClient();
    const router = useRouter();
+   const toast = useToast();
 
    return useMutation({
       mutationFn: (data: LoginPayload) =>
@@ -23,7 +25,7 @@ export function useLogin() {
       },
       onError: (error: any) => {
          // ví dụ nếu apiFetch throw AppError
-         alert(error.message ?? "Login failed");
+         toast.error(error.message ?? "Login failed");
       },
    });
 }

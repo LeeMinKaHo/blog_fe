@@ -7,10 +7,12 @@ import Link from "next/link";
 import BlogEditor from "@/components/editor/BlogEditor";
 import { AuthGuard } from "@/components/AuthGuard";
 import { apiClient } from "@/app/lib/apiClient";
+import { useToastActions } from "@/components/toast/useToastActions";
 import ImageUploader from "@/components/editor/ImageUploader";
 
 export default function CreateBlogPage() {
     const router = useRouter();
+    const toast = useToastActions();
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [thumbnail, setThumbnail] = useState("");
@@ -19,27 +21,34 @@ export default function CreateBlogPage() {
 
     const handlePublish = async () => {
         if (!title || !content) {
-            alert("Vui lòng nhập ít nhất tiêu đề và nội dung bài viết!");
+            toast.warning("Vui lòng nhập ít nhất tiêu đề và nội dung bài viết!");
             return;
         }
 
         setIsSubmitting(true);
+
         try {
-            await apiClient("/blogs", {
-                method: "POST",
-                body: JSON.stringify({
-                    title,
-                    content,
-                    description: description || "Không có mô tả", // or something similar
-                    thumbnail: thumbnail || "",
-                    categoryId: 1 // hardcoded for now or we could add a selector
+            await toast.promise(
+                apiClient("/blogs", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        title,
+                        content,
+                        description: description || "Không có mô tả",
+                        thumbnail: thumbnail || "",
+                        categoryId: 1
+                    }),
                 }),
-            });
-            alert("Bài viết đã được đăng thành công!");
+                {
+                    loading: "Đang đăng bài viết kiến tạo của bạn...",
+                    success: "Bài viết của bạn đã được lan toả! 🎉",
+                    error: (err) => `Lỗi: ${err.message}`
+                }
+            );
+
             router.push("/blogs");
         } catch (error: any) {
             console.error("Lỗi đăng bài:", error);
-            alert("Lỗi khi đăng bài: " + error.message);
         } finally {
             setIsSubmitting(false);
         }
@@ -114,7 +123,7 @@ export default function CreateBlogPage() {
                             </h3>
                             <ImageUploader
                                 currentUrl={thumbnail || undefined}
-                                onUpload={(result) => setThumbnail(result.url)}
+                                onUpload={(result: any) => setThumbnail(result.url)}
                                 placeholder="Kéo thả hoặc click để tải ảnh bìa"
                                 aspect="video"
                             />

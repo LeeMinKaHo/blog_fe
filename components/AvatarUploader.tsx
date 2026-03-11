@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
+import { useToast } from "@/components/toast";
 
 export default function AvatarUploader({ avatar }: { avatar: string }) {
+   const toast = useToast();
    const fileInputRef = useRef<HTMLInputElement>(null);
    const [preview, setPreview] = useState(avatar);
    const [loading, setLoading] = useState(false);
@@ -46,11 +48,12 @@ export default function AvatarUploader({ avatar }: { avatar: string }) {
                avatar: avatarUrl,
             }),
          });
-         console.log("updated user avatar" , avatarUrl);
+         console.log("updated user avatar", avatarUrl);
          setPreview(avatarUrl);
+         toast.success("Cập nhật avatar thành công! ✨");
       } catch (err) {
          console.error(err);
-         alert("Upload thất bại");
+         toast.error("Cập nhật avatar thất bại!");
       } finally {
          setLoading(false);
       }
@@ -62,10 +65,9 @@ export default function AvatarUploader({ avatar }: { avatar: string }) {
             <Image
                src={preview}
                alt="Avatar"
-              fill
-               className={`rounded-full object-cover ${
-                  loading ? "opacity-50" : ""
-               }`}
+               fill
+               className={`rounded-full object-cover ${loading ? "opacity-50" : ""
+                  }`}
                onClick={handleClick}
                unoptimized
             />

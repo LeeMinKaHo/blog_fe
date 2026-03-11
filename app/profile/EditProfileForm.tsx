@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useToast } from "@/components/toast";
 
 type Props = {
   name?: string;
 };
 
 export default function EditProfileForm({ name }: Props) {
+  const toast = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(name ?? "");
   const [loading, setLoading] = useState(false);
@@ -30,9 +32,10 @@ export default function EditProfileForm({ name }: Props) {
       if (!res.ok) throw new Error("Update failed");
 
       setIsEditing(false);
+      toast.success("Cập nhật profile thành công!");
       window.location.reload(); // 🔥 đơn giản – đúng intern level
     } catch (err) {
-      alert("Failed to update profile");
+      toast.error("Cập nhật profile thất bại!");
     } finally {
       setLoading(false);
     }

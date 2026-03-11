@@ -15,6 +15,7 @@ import {
     List, ListOrdered, Heading1, Heading2,
     Youtube as YoutubeIcon, Quote, Undo, Redo
 } from "lucide-react";
+import { useToast } from "@/components/toast";
 
 interface BlogEditorProps {
     content: string;
@@ -23,6 +24,7 @@ interface BlogEditorProps {
 
 const MenuBar = ({ editor }: { editor: any }) => {
     if (!editor) return null;
+    const toast = useToast();
     const imageInputRef = useRef<HTMLInputElement>(null);
     const [isUploading, setIsUploading] = useState(false);
 
@@ -46,9 +48,9 @@ const MenuBar = ({ editor }: { editor: any }) => {
             if (!res.ok) throw new Error("Upload thất bại");
             const { url } = await res.json();
             editor.chain().focus().setImage({ src: url }).run();
-        } catch (err) {
+        } catch (err: any) {
             console.error("Upload ảnh thất bại:", err);
-            alert("Không thể tải ảnh lên. Vui lòng thử lại!");
+            toast.error(err.message || "Không thể tải ảnh lên. Vui lòng thử lại!");
         } finally {
             setIsUploading(false);
         }
