@@ -19,6 +19,12 @@ export interface AdminStats {
     comments: {
         total: number;
     };
+    charts: {
+        userGrowth: { date: string; count: number }[];
+        blogGrowth: { date: string; count: number }[];
+        categoryStats: { name: string; value: number }[];
+        topBlogs: { title: string; views: number }[];
+    };
 }
 
 export interface AdminBlog {

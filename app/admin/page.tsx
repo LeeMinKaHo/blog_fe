@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import { getAdminStats, getAdminBlogs, AdminStats } from "@/app/services/adminService";
 import { useMe } from "@/app/hooks/useMe";
+import { UserGrowthChart, BlogGrowthChart, CategoryPieChart, TopBlogsChart } from "@/components/admin/AdminCharts";
 
 function StatCard({
     label, value, subLabel, icon, bg, textColor, trend
@@ -159,6 +160,16 @@ export default function AdminDashboard() {
                             </div>
                         </div>
                     ))}
+                </div>
+            )}
+
+            {/* Charts Section */}
+            {s?.charts && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <UserGrowthChart data={s.charts.userGrowth} />
+                    <BlogGrowthChart data={s.charts.blogGrowth} />
+                    <CategoryPieChart data={s.charts.categoryStats} />
+                    <TopBlogsChart data={s.charts.topBlogs} />
                 </div>
             )}
 

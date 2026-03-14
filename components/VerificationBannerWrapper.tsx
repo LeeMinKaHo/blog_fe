@@ -2,13 +2,18 @@
 
 import { useMe } from "@/app/hooks/useMe";
 import VerificationBanner from "./VerificationBanner";
+import { usePathname } from "next/navigation";
 
 /**
  * Wrapper client component để đặt VerificationBanner vào layout (Server Component).
  * Tự động hiển thị banner khi user đã đăng nhập nhưng chưa xác thực email.
  */
 export default function VerificationBannerWrapper() {
+    const pathname = usePathname();
     const { data: user } = useMe();
+
+    // Don't show on admin pages
+    if (pathname?.startsWith("/admin")) return null;
 
     // Chỉ hiện khi: đã đăng nhập + chưa verify
     if (!user || user.isVerified !== false) return null;

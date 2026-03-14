@@ -9,9 +9,11 @@ import { User, LogOut, Settings, LayoutDashboard, ChevronDown, Plus, Shield, Boo
 
 import SearchBox from "@/components/SearchBox";
 import NotificationBell from "@/components/NotificationBell";
+import { usePathname } from "next/navigation";
 
 
 export default function Header() {
+   const pathname = usePathname();
    const { data: user, isLoading } = useMe();
    const [isMenuOpen, setIsMenuOpen] = useState(false);
    const dropdownRef = useRef<HTMLDivElement>(null);
@@ -35,6 +37,9 @@ export default function Header() {
       document.addEventListener("mousedown", handleClickOutside);
       return () => document.removeEventListener("mousedown", handleClickOutside);
    }, []);
+
+   // Don't show header on admin pages
+   if (pathname?.startsWith("/admin")) return null;
 
    return (
       <header className="w-full border-b bg-white sticky top-0 z-50 shadow-sm">

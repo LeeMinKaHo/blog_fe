@@ -1,4 +1,12 @@
+"use client";
+import { usePathname } from "next/navigation";
+
 export default function Footer() {
+  const pathname = usePathname();
+  
+  // Don't show footer on admin pages
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <footer className="border-t border-gray-200 bg-white">
       <div className="mx-auto max-w-7xl px-6 py-10">
