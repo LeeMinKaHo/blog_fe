@@ -8,9 +8,9 @@ export default function Top5NewPost({ posts = [] }: { posts: any[] }) {
    const remainingPosts = posts.slice(2, 5);
 
    return (
-      <div className="mb-10">
+      <div className="mb-10 space-y-4">
          {/* Row 1 */}
-         <div className="flex flex-col md:flex-row gap-4 mb-4">
+         <div className="flex flex-col md:flex-row gap-4 animate-fade-in-up">
             <div className="flex-[7] group">
                <Link href={`/blogs/${mainPost?.id}`}>
                   <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-100">
@@ -55,8 +55,12 @@ export default function Top5NewPost({ posts = [] }: { posts: any[] }) {
 
          {/* Row 2 */}
          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {remainingPosts.map((post) => (
-               <Link key={post.id} href={`/blogs/${post.id}`} className="group">
+            {remainingPosts.map((post, index) => (
+               <Link 
+                  key={post.id} 
+                  href={`/blogs/${post.id}`} 
+                  className={`group animate-fade-in-up animate-delay-${(index + 2) * 100}`}
+               >
                   <div className="flex flex-col gap-3">
                      <div className="relative aspect-video overflow-hidden rounded-xl">
                         <img

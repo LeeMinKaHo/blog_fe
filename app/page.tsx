@@ -20,7 +20,7 @@ export default async function Home({ searchParams }: HomeProps) {
    const { posts, meta } = await getPosts(currentPage, 10);
 
    return (
-      <div className="flex justify-between gap-3">
+      <div className="flex justify-between gap-6 px-4 md:px-0">
          <div className="flex-1 min-w-0">
             {currentPage === 1 && (
                <>

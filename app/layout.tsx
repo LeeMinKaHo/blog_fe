@@ -6,28 +6,31 @@ import { inter, playfair } from "./font";
 import VerificationBannerWrapper from "@/components/VerificationBannerWrapper";
 import MainWrapper from "@/components/MainWrapper";
 
+import ScrollToTop from "@/components/ScrollToTop";
+
 export const metadata = {
-  title: "My Blog",
-  description: "A clean blog built with Next.js",
+   title: "My Blog",
+   description: "A clean blog built with Next.js",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-      <body className="bg-gray-50 min-h-screen flex flex-col">
+   return (
+      <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+         <body className="bg-gray-50 min-h-screen flex flex-col">
 
-        <Providers>
-          <Header />
-          <VerificationBannerWrapper />
+            <Providers>
+               <Header />
+               <VerificationBannerWrapper />
 
-          <MainWrapper>
-            {children}
-          </MainWrapper>
+               <MainWrapper>
+                  {children}
+               </MainWrapper>
 
-          <Footer />
-        </Providers>
+               <Footer />
+               <ScrollToTop />
+            </Providers>
 
-      </body>
-    </html>
-  );
+         </body>
+      </html>
+   );
 }

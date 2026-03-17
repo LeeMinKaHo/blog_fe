@@ -58,30 +58,23 @@ export default function SearchBox() {
   };
 
   return (
-    <div ref={containerRef} style={{ position: "relative", width: "280px" }}>
+    <div ref={containerRef} className={`relative transition-all duration-500 ease-in-out w-full md:max-w-md ${isFocused ? 'md:w-[450px]' : 'md:w-[280px]'}`}>
       {/* Search Input */}
       <form onSubmit={handleSubmit}>
         <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            padding: "8px 12px",
-            background: isFocused ? "#fff" : "#f3f4f6",
-            border: isFocused ? "1.5px solid #3b82f6" : "1.5px solid transparent",
-            borderRadius: "12px",
-            transition: "all 0.2s ease",
-            boxShadow: isFocused ? "0 0 0 3px rgba(59,130,246,0.12)" : "none",
-          }}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ${
+            isFocused 
+              ? "bg-white border-1.5 border-blue-600 shadow-xl shadow-blue-100 scale-105" 
+              : "bg-gray-100 border-1.5 border-transparent"
+          }`}
         >
           {isLoading ? (
             <Loader2
-              size={16}
-              color="#9ca3af"
-              style={{ flexShrink: 0, animation: "spin 0.8s linear infinite" }}
+              size={18}
+              className="text-gray-400 animate-spin shrink-0"
             />
           ) : (
-            <Search size={16} color={isFocused ? "#3b82f6" : "#9ca3af"} style={{ flexShrink: 0, transition: "color 0.2s" }} />
+            <Search size={18} className={`shrink-0 transition-colors duration-300 ${isFocused ? 'text-blue-600' : 'text-gray-400'}`} />
           )}
 
           <input
@@ -92,15 +85,7 @@ export default function SearchBox() {
             onFocus={() => setIsFocused(true)}
             placeholder="Tìm kiếm bài viết..."
             aria-label="Tìm kiếm bài viết"
-            style={{
-              flex: 1,
-              border: "none",
-              outline: "none",
-              background: "transparent",
-              fontSize: "13.5px",
-              color: "#111827",
-              fontFamily: "inherit",
-            }}
+            className="flex-1 border-none outline-none bg-transparent text-sm text-gray-900 placeholder:text-gray-400"
           />
 
           {/* Clear button */}
@@ -109,34 +94,15 @@ export default function SearchBox() {
               type="button"
               onClick={() => { setQuery(""); inputRef.current?.focus(); }}
               aria-label="Xoá tìm kiếm"
-              style={{
-                background: "#e5e7eb",
-                border: "none",
-                borderRadius: "50%",
-                width: "18px",
-                height: "18px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                flexShrink: 0,
-              }}
+              className="bg-gray-200 hover:bg-gray-300 text-gray-500 rounded-full p-1.5 transition-colors shrink-0"
             >
-              <X size={10} color="#6b7280" />
+              <X size={12} />
             </button>
           )}
 
           {/* Phím tắt badge - ẩn khi đang gõ */}
           {!query && !isFocused && (
-            <span style={{
-              fontSize: "11px",
-              color: "#9ca3af",
-              background: "#e5e7eb",
-              padding: "1px 5px",
-              borderRadius: "4px",
-              flexShrink: 0,
-              fontFamily: "monospace",
-            }}>
+            <span className="text-[10px] text-gray-400 bg-gray-200 px-1.5 py-0.5 rounded font-mono shrink-0">
               ⌘K
             </span>
           )}

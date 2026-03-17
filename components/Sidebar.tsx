@@ -242,10 +242,18 @@ function StayUpdatedWidget() {
 export default function SideBar() {
     return (
         <aside className="space-y-4 sticky top-24">
-            <StayUpdatedWidget />
-            <TrendingWidget />
-            <CategoriesWidget />
-            <NewsletterWidget />
+            <div className="animate-fade-in-up">
+                <StayUpdatedWidget />
+            </div>
+            <div className="animate-fade-in-up animate-delay-100">
+                <TrendingWidget />
+            </div>
+            <div className="animate-fade-in-up animate-delay-200">
+                <CategoriesWidget />
+            </div>
+            <div className="animate-fade-in-up animate-delay-300">
+                <NewsletterWidget />
+            </div>
         </aside>
     );
 }
