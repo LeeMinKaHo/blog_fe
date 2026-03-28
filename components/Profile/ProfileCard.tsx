@@ -97,10 +97,12 @@ export default function ProfileCard({ user: initialUser }: ProfileCardProps) {
 
                {/* Stats bar */}
                {stats && (
-                  <div className="grid grid-cols-3 gap-3 mb-8">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-8">
                      <StatBox icon={<FileText size={18} />} label="Bài viết" value={stats.totalPosts} />
                      <StatBox icon={<Eye size={18} />} label="Lượt xem" value={stats.totalViews.toLocaleString("vi-VN")} />
                      <StatBox icon={<MessageSquare size={18} />} label="Bình luận" value={stats.totalComments} />
+                     <StatBox icon={<User size={18} />} label="Followers" value={stats.followerCount} />
+                     <StatBox icon={<User size={18} />} label="Following" value={stats.followingCount} />
                   </div>
                )}
 

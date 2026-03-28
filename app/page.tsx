@@ -6,6 +6,7 @@ import SideBar from "@/components/Sidebar";
 import Top5NewPost from "@/components/Top5NewPost";
 import ExploreMoreList from "@/components/ExploreMoreList";
 import FeaturedPostList from "@/components/FeaturedPost";
+import { getTrendingBlogs } from "@/app/services/blogService";
 
 
 interface HomeProps {
@@ -17,7 +18,14 @@ interface HomeProps {
 export default async function Home({ searchParams }: HomeProps) {
    const { page } = await searchParams;
    const currentPage = page ? Number(page) : 1;
-   const { posts, meta } = await getPosts(currentPage, 10);
+   
+   // Fetch song song
+   const [postsRes, trendingBlogs] = await Promise.all([
+      getPosts(currentPage, 10),
+      getTrendingBlogs(6) // Lấy top 6 bài trending
+   ]);
+   
+   const { posts, meta } = postsRes;
 
    return (
       <div className="flex justify-between gap-6 px-4 md:px-0">
@@ -25,7 +33,7 @@ export default async function Home({ searchParams }: HomeProps) {
             {currentPage === 1 && (
                <>
                   <Top5NewPost posts={posts} />
-                  <FeaturedPostList />
+                  <FeaturedPostList blogs={trendingBlogs} />
                </>
             )}
 

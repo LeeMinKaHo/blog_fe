@@ -5,7 +5,7 @@ import CommentSection from "./CommentSection";
 import SavePostButton from "@/components/SavePostButton";
 import LikePostButton from "@/components/LikePostButton";
 import ViewTracker from "@/components/ViewTracker";
-
+import FollowButton from "@/components/FollowButton";
 
 interface BlogDetailProps {
    params: {
@@ -49,18 +49,26 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
             <div className="flex flex-col items-center gap-6">
                {/* Metadata (Thông tin thêm) */}
                <div className="flex flex-wrap justify-center items-center gap-6 text-gray-500 text-sm font-medium">
-                  <div className="flex items-center gap-1">
-                     <User size={16} className="text-blue-500" /> <span>{post.createdBy?.name || "Admin"}</span>
+                  
+                  <div className="flex items-center gap-3">
+                     <div className="flex items-center gap-1">
+                        <User size={16} className="text-blue-500" /> 
+                        <span>{post.createdBy?.name || "Member"}</span>
+                     </div>
+                     {(post.authorId || post.createdBy?.id) && (
+                        <FollowButton userId={post.authorId || post.createdBy!.id} />
+                     )}
                   </div>
+
                   <div className="flex items-center gap-1">
                      <Calendar size={16} className="text-blue-500" />
                      <span>
                         {post.createdAt
                            ? new Date(post.createdAt).toLocaleDateString("vi-VN", {
-                              day: "2-digit",
-                              month: "long",
-                              year: "numeric",
-                           })
+                               day: "2-digit",
+                               month: "long",
+                               year: "numeric",
+                            })
                            : "Chưa rõ"}
                      </span>
                   </div>
@@ -97,11 +105,6 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
                {post.description}
             </p>
 
-            {/*
-              ── ViewTracker Sentinel ──
-              Đặt ở giữa nội dung bài viết.
-              Khi user cuộn tới đây (≈ 50% bài), Intersection Observer sẽ kích hoạt API tăng view.
-            */}
             <ViewTracker postId={Number(id)} initialViews={post.views ?? 0} />
 
             {/* Nội dung chính từ HTML */}

@@ -25,6 +25,8 @@ export interface UserStats {
     totalPosts: number;
     totalViews: number;
     totalComments: number;
+    followerCount: number;
+    followingCount: number;
     joinedAt: string | null;
 }
 
@@ -57,4 +59,26 @@ export async function updateProfile(
         method: "PUT",
         body: JSON.stringify(payload),
     });
+}
+
+/** Toggle follow/unfollow một user */
+export async function toggleFollow(userId: number): Promise<{ followed: boolean; message: string }> {
+    return apiClient<{ followed: boolean; message: string }>(`/users/${userId}/follow`, {
+        method: "POST",
+    });
+}
+
+/** Lấy danh sách người đang theo dõi user này */
+export async function getFollowers(userId: number): Promise<any[]> {
+    return apiClient<any[]>(`/users/${userId}/followers`);
+}
+
+/** Lấy danh sách người mà user này đang theo dõi */
+export async function getFollowing(userId: number): Promise<any[]> {
+    return apiClient<any[]>(`/users/${userId}/following`);
+}
+
+/** Kiểm tra mình đã follow user này chưa */
+export async function checkIsFollowing(userId: number): Promise<boolean> {
+    return apiClient<boolean>(`/users/${userId}/is-following`);
 }

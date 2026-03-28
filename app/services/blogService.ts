@@ -179,3 +179,8 @@ export async function getMyBlogs(params?: {
     });
     return apiClient<PaginatedBlogs>(`/blogs/my-blogs${qs}`);
 }
+
+/** Lấy danh sách bài viết đang trending (nhiều lượt xem nhất trong tuần) */
+export async function getTrendingBlogs(limit = 5): Promise<Blog[]> {
+    return apiClient<Blog[]>(`/blogs/trending${buildQuery({ limit })}`);
+}

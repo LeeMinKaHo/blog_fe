@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Bell, Check, ExternalLink, Loader2, MessageSquare, Heart } from "lucide-react";
+import { Bell, Check, ExternalLink, Loader2, MessageSquare, Heart, UserPlus } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getNotifications, markAsRead, markAllAsRead, Notification } from "@/app/services/notificationService";
 import { useNotification } from "@/app/hooks/useNotification";
@@ -52,6 +52,8 @@ export default function NotificationBell() {
                 return <Heart size={14} className="text-red-500 fill-red-500" />;
             case 'COMMENT_POST':
                 return <MessageSquare size={14} className="text-blue-500" />;
+            case 'FOLLOW':
+                return <UserPlus size={14} className="text-green-500" />;
             default:
                 return <Bell size={14} className="text-gray-500" />;
         }
@@ -61,13 +63,10 @@ export default function NotificationBell() {
         if (notification.type === 'LIKE_POST' || notification.type === 'COMMENT_POST') {
             return `/blogs/${notification.targetId}`;
         }
-        if (notification.type === 'LIKE_COMMENT') {
-            // Giả sử chuyển hướng tới post chứa comment đó. 
-            // BE cần trả về postId nếu targetId là commentId, hoặc ta có logic map.
-            // Hiện tại cứ map tới chính targetId nế là post, còn comment thì cần xử lý thêm.
-            return `/blogs/${notification.targetId}`;
+        if (notification.type === 'FOLLOW') {
+            return `/profile`;
         }
-        return "#";
+        return `/blogs/${notification.targetId}`;
     };
 
     return (
