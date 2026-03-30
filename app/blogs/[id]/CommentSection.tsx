@@ -61,7 +61,9 @@ export default function CommentSection({ postId }: { postId: number }) {
                   Viết bình luận
                </p>
                <CommentForm
-                  onSubmit={submitComment}
+                  onSubmit={async (content) => {
+                     await submitComment(content);
+                  }}
                   userAvatar={me.avatar}
                   userName={me.name}
                   placeholder="Chia sẻ suy nghĩ của bạn... (Ctrl+Enter để gửi)"

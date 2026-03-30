@@ -46,10 +46,21 @@ export async function getProfile(): Promise<UserProfile> {
     return apiClient<UserProfile>("/users/profile");
 }
 
-/** Lấy thống kê hoạt động của user */
+/** Lấy thống kê hoạt động của user (của mình) */
 export async function getUserStats(): Promise<UserStats> {
     return apiClient<UserStats>("/users/stats");
 }
+
+/** Lấy profile của user bất kỳ */
+export async function getUserProfileById(userId: number | string): Promise<UserProfile> {
+    return apiClient<UserProfile>(`/users/${userId}/profile`);
+}
+
+/** Lấy thống kê của user bất kỳ */
+export async function getUserStatsById(userId: number | string): Promise<UserStats> {
+    return apiClient<UserStats>(`/users/${userId}/stats`);
+}
+
 
 /** Cập nhật thông tin user */
 export async function updateProfile(

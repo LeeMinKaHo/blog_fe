@@ -2,8 +2,8 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, LoginFormValues } from "@/schemas/auth.schema";
-import { useLogin } from "@/hooks/useLogin";
+import { loginSchema, LoginFormData } from "@/app/schemas/auth.schema";
+import { useLogin } from "@/app/hooks/useLogin";
 
 export default function LoginForm() {
   const { mutate, isPending, error } = useLogin();
@@ -12,11 +12,11 @@ export default function LoginForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormValues>({
+  } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: LoginFormValues) => {
+  const onSubmit = (data: LoginFormData) => {
     mutate(data);
   };
 

@@ -154,9 +154,12 @@ export default function AdminPostsPage() {
                                                 <p className="text-[11px] text-gray-400 mt-0.5">{timeAgo(post.createdAt)}</p>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className="text-sm font-medium text-gray-700">
-                                                    {post.createdBy?.name ?? "—"}
-                                                </span>
+                                                <Link 
+                                                    href={`/profile/${post.author?.id}`}
+                                                    className="text-sm font-bold text-gray-700 hover:text-blue-600 transition-colors"
+                                                >
+                                                    {post.author?.name ?? post.author?.email ?? "—"}
+                                                </Link>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className={`text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider ${sc.cls}`}>

@@ -37,6 +37,7 @@ export interface AdminBlog {
     thumbnail?: string;
     description?: string;
     category?: { id: number; name: string };
+    author?: { id: number; name: string; email: string };
     createdBy?: { id: number; name: string; email: string };
 }
 

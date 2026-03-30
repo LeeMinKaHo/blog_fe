@@ -1,88 +1,103 @@
-# Foxtek Blog Frontend (Next.js)
+# 🎨 Foxtek Blog Frontend (Next.js)
 
-Dự án Frontend cho nền tảng Foxtek Blog, được xây dựng bằng **Next.js (App Router)** kết hợp với **Tailwind CSS**. Dự án cung cấp giao diện người dùng hiện đại, tốc độ cao và thân thiện, kết nối trực tiếp với backend NestJS.
+Giao diện người dùng hiện đại cho nền tảng **Foxtek Blog**, được xây dựng với các công nghệ web tiên tiến nhất (**Next.js 16**, **React 19**, **Tailwind CSS 4**). Dự án tối ưu hóa hiệu suất, SEO và trải nghiệm người dùng real-time.
+
+---
 
 ## 🚀 Công nghệ sử dụng
 
-- **Framework:** [Next.js](https://nextjs.org/) (App Router)
+### Core Stack
+- **Framework:** [Next.js 16](https://nextjs.org/) (App Router)
+- **Library:** [React 19](https://react.dev/)
+- **Styling:** [Tailwind CSS 4](https://tailwindcss.com/)
 - **Ngôn ngữ:** TypeScript
-- **Styling:** Tailwind CSS
-- **State Management & Data Fetching:** React Query (@tanstack/react-query)
+
+### Ecosystem
+- **State Management & Fetching:** [TanStack Query v5](https://tanstack.com/query/latest) & SWR
+- **Editor:** [Tiptap](https://tiptap.dev/) (Rich text editor tích hợp Image, Youtube, Link)
+- **Real-time:** [Socket.io-client](https://socket.io/)
+- **Forms:** React Hook Form & Zod validation
+- **Visualization:** [Recharts](https://recharts.org/)
 - **Icons:** Lucide React
-- **Package Manager:** `pnpm`
+
+---
 
 ## ✨ Tính năng nổi bật
 
-- **Kiến trúc linh hoạt:** Sử dụng Next.js App Router, chia tách Server Components và Client Components để tối ưu SEO và hiệu suất.
-- **Tìm kiếm & Lọc:** Tìm kiếm bài viết theo từ khóa và lọc theo danh mục ngay trên thanh điều hướng hoặc sidebar.
-- **Xác thực người dùng:** Đăng nhập, đăng ký tài khoản mới và luồng xác thực mã OTP.
-- **Giao diện hiện đại (UI/UX):** 
-  - Toast notifications được custom đẹp mắt và mượt mà.
-  - Sidebar phong phú với các widget: Top Trending, Danh mục, Newsletter.
-  - Loading skeletons và Transition state mượt mà.
-- **Trang Quản trị (Admin):** Quản lý bài viết (thêm, sửa, xóa) với dữ liệu thực từ backend.
-- **API Client:** Hệ thống `apiClient.ts` custom giúp quản lý base URL, xử lý tự động cookie, middleware lỗi và token.
+### 🌐 Trải nghiệm người dùng
+- **Real-time Notifications:** Nhận thông báo tức thì khi có tương tác mới qua Socket.io.
+- **Dynamic Search:** Tìm kiếm bài viết thông minh với debounce và bộ lọc danh mục.
+- **Responsive Design:** Giao diện tương thích hoàn hảo trên mọi thiết bị (Mobile, Tablet, Desktop).
+- **Smooth Interaction:** Loading skeletons, mượt mà với Framer Motion (nếu có) và Toast notifications.
 
-## 📂 Cấu trúc thư mục chính
+### 🔐 Authentication
+- Luồng đăng ký/đăng nhập chuyên nghiệp.
+- Xác thực bảo mật với OTP.
+- Quản lý trạng thái đăng nhập qua Server Context & Client Providers.
+
+### ✍️ Content Creation
+- Trình soạn thảo **Tiptap** mạnh mẽ, hỗ trợ chèn ảnh, video Youtube và định dạng văn bản phong phú.
+- Quản lý bài viết nháp và xuất bản.
+
+### 📊 Admin Dashboard
+- Trang quản trị dành riêng cho việc quản lý bài viết, người dùng và danh mục.
+- Biểu đồ thống kê trực quan sử dụng **Recharts**.
+
+### 👥 Author Profiles
+- Trang cá nhân công khai hiển thị thông tin tác giả và danh sách bài viết.
+- Tính năng Follow/Unfollow thời gian thực.
+
+---
+
+## 📂 Cấu trúc thư mục
 
 ```text
 blog_fe/
-├── app/
-│   ├── admin/         # Giao diện quản trị (ví dụ: quản lý bài viết)
-│   ├── blogs/         # Trang danh sách bài viết & chi tiết
-│   ├── login/         # Trang đăng nhập
-│   ├── register/      # Trang đăng ký
-│   ├── hooks/         # Custom React hooks (useSearch, ...)
-│   ├── lib/           # Utilities (apiClient.ts, utils, ...)
-│   ├── providers.tsx  # Global Providers (React Query, Toast, ...)
-│   └── services/      # Các service gọi API (authService, blogService, ...)
-├── components/        # Các UI Components dùng chung (Header, Sidebar, BlogCard, Toast, ...)
-├── public/            # Assets tĩnh (hình ảnh, favicon, ...)
-└── tailwind.config.ts # Cấu hình giao diện Tailwind
+├── app/               # Next.js App Router (Pages, Layouts, API configs)
+├── components/        # Thư mục UI Components (Atom, Molecule, Organism)
+│   ├── admin/         # Components dành cho trang quản trị
+│   ├── blog/          # Components liên quan đến bài viết
+│   ├── layout/        # Header, Footer, Sidebar
+│   └── ui/            # Common UI elements (Button, Input, Modal)
+├── hooks/             # Custom React hooks
+├── lib/               # Utility functions & API Client configuration
+├── services/          # Các hàm gọi API (Auth, Blog, User services)
+├── public/            # Assets tĩnh
+└── tailwind.config.ts # Cấu hình Tailwind CSS
 ```
 
-## ⚙️ Yêu cầu môi trường
+---
 
-- **Node.js**: Phiên bản 18+ trở lên.
-- **pnpm**: Cài đặt thông qua npm (`npm install -g pnpm`).
-- Backend **blog_be** (NestJS) đang được chạy.
+## ⚙️ Hướng dẫn khởi chạy
 
-## 🚀 Hướng dẫn cài đặt và khởi chạy
+### 1. Yêu cầu
+- **Node.js** v20+
+- **pnpm** (Khuyên dùng)
 
-**Bước 1: Clone dự án và cài đặt dependencies**
+### 2. Cài đặt
 
 ```bash
-cd blog_fe
+# Cài đặt dependencies
 pnpm install
-```
 
-**Bước 2: Cấu hình biến môi trường**
-
-Tạo một file `.env.local` ở thư mục gốc của dự án và khai báo đường dẫn tới API Backend:
-
-```env
+# Cấu hình biến môi trường (.env.local)
 NEXT_PUBLIC_API_URL=http://localhost:3000
 ```
-> *(Thay đổi port nếu backend NestJS của bạn đang chạy ở port khác)*
 
-**Bước 3: Chạy môi trường phát triển (Development)**
+### 3. Phát triển
 
 ```bash
 pnpm dev
 ```
-Mở trình duyệt và truy cập `http://localhost:3001` (hoặc port được cấp nếu 3001 đã bị chiếm).
-
-**Bước 4: Build cho môi trường Production**
-
-```bash
-pnpm build
-pnpm start
-```
-
-## 📜 Quy ước code
-
-- **Services:** Tất cả các lệnh gọi API phải được định nghĩa trong thư mục `app/services/` và sử dụng `apiClient` từ `app/lib/apiClient.ts`.
-- **UI Components:** Chỉ chứa logic hiển thị. Logic lấy dữ liệu nên được đưa vào Hooks hoặc đẩy lên page component.
+Truy cập: `http://localhost:3001`
 
 ---
-*Created with ❤️ for Foxtek Community*
+
+## 📜 Quy ước Code
+
+- **Component-driven:** Chia nhỏ component để tái sử dụng.
+- **Type Safety:** Luôn định nghĩa interface/type cho props và dữ liệu API.
+- **Performance:** Sử dụng Server Components cho nội dung tĩnh và Client Components cho tương tác.
+
+---
+*Building a fast and beautiful blog experience for Foxtek Community.*

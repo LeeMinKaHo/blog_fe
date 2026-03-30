@@ -17,6 +17,7 @@ import {
     ChevronLeft,
     ChevronRight,
     Loader2,
+    ArrowRight,
 } from "lucide-react";
 import Pagination from "@/components/Pagination";
 
@@ -63,27 +64,34 @@ export default function SavedPostsClient() {
     // Chưa đăng nhập
     if (!userLoading && !user) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 flex items-center justify-center px-4">
-                <div className="text-center max-w-md">
-                    <div className="w-24 h-24 bg-blue-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                        <Bookmark size={40} className="text-blue-500" />
+            <div className="min-h-[80vh] flex items-center justify-center p-6">
+                <div className="w-full max-w-lg bg-white rounded-[40px] border border-gray-100 shadow-2xl p-12 text-center animate-in fade-in zoom-in-95 duration-500 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50/50 rounded-full -translate-y-16 translate-x-16" />
+                    
+                    <div className="w-24 h-24 bg-blue-100 rounded-[32px] flex items-center justify-center mx-auto mb-8 shadow-inner relative z-10">
+                        <Bookmark size={44} className="text-blue-600 drop-shadow-md" fill="currentColor" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-3">
-                        Đăng nhập để xem bài đã lưu
+                    
+                    <h2 className="text-3xl font-black text-gray-900 mb-4 tracking-tight">
+                        Bạn chưa đăng nhập
                     </h2>
-                    <p className="text-gray-500 mb-8 leading-relaxed">
-                        Bạn cần đăng nhập để xem và quản lý danh sách bài viết đã lưu của mình.
+                    
+                    <p className="text-gray-500 text-base leading-relaxed mb-10 max-w-sm mx-auto font-medium">
+                        Bạn cần đăng nhập để xem và quản lý danh sách bài viết đã lưu của mình. Đừng bỏ lỡ những bài viết hay nhé!
                     </p>
+
                     <Link
                         href="/login"
-                        className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-2xl font-semibold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 active:scale-95"
+                        className="flex items-center justify-center gap-3 bg-blue-600 text-white px-10 py-5 rounded-3xl font-black shadow-2xl shadow-blue-200 hover:bg-blue-700 hover:-translate-y-1 active:scale-95 transition-all duration-300 group"
                     >
                         Đăng nhập ngay
+                        <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                     </Link>
                 </div>
             </div>
         );
     }
+
 
     // Đang load
     if (userLoading || blogsLoading) {
@@ -245,13 +253,17 @@ export default function SavedPostsClient() {
                                         )}
 
                                         {/* Meta info */}
-                                        <div className="flex items-center justify-between text-xs text-gray-400 border-t border-gray-50 pt-3">
-                                            <div className="flex items-center gap-1.5">
-                                                <User size={12} />
-                                                <span className="font-medium">
-                                                    {blog.createdBy?.name ?? "Unknown"}
+                                        <div className="flex items-center justify-between text-xs text-gray-400 border-t border-gray-50 pt-3 relative z-10">
+                                            <Link 
+                                                href={`/profile/${blog.author?.id}`}
+                                                className="flex items-center gap-1.5 hover:text-blue-600 transition-colors"
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                <User size={12} className="text-blue-500" />
+                                                <span className="font-bold underline underline-offset-2">
+                                                    {blog.author?.name ?? "Unknown"}
                                                 </span>
-                                            </div>
+                                            </Link>
                                             <div className="flex items-center gap-1.5">
                                                 <Clock size={12} />
                                                 <span>{formatDate(blog.createdAt)}</span>

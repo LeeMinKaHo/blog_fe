@@ -238,9 +238,9 @@ export default function SearchBox() {
                               {post.category.name}
                             </span>
                           )}
-                          {post.createdBy?.name && (
+                          {post.author?.name && (
                             <span style={{ fontSize: "11px", color: "#9ca3af" }}>
-                              {post.createdBy.name}
+                              {post.author.name}
                             </span>
                           )}
                         </div>

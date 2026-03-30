@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { apiFetch } from "@/app/lib/api";
 import { LoginPayload } from "@/app/types/auth";
 import { useToast } from "@/components/toast";
+import type { User } from "@/app/types/user";
 
 export function useLogin() {
    const queryClient = useQueryClient();
@@ -11,20 +12,20 @@ export function useLogin() {
 
    return useMutation({
       mutationFn: (data: LoginPayload) =>
-         apiFetch("/auth/sign-in", {
+         apiFetch<User>("/auth/sign-in", {
             method: "POST",
             body: JSON.stringify(data),
          }),
 
-      onSuccess: () => {
-         // 🔥 báo cho toàn app biết user đã login
-         queryClient.invalidateQueries({ queryKey: ["me"] });
+      onSuccess: (user: User) => {
+         // ✅ Cập nhật cache "me" ngay lập tức với data trả về từ API login
+         // Tránh flash màn hình chưa đăng nhập khi navigate
+         queryClient.setQueryData(["me"], user);
 
-         // 🔁 chuyển trang
+         // 🔁 chuyển trang (lúc này cache đã có user → UI render đúng ngay)
          router.push("/");
       },
       onError: (error: any) => {
-         // ví dụ nếu apiFetch throw AppError
          toast.error(error.message ?? "Login failed");
       },
    });

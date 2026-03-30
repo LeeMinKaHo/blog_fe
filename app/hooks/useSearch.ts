@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getBlogs } from "@/app/services/blogService";
 import type { Blog } from "@/app/services/blogService";
 
-export type SearchBlogItem = Pick<Blog, "id" | "title" | "thumbnail" | "category" | "createdBy">;
+export type SearchBlogItem = Pick<Blog, "id" | "title" | "thumbnail" | "category" | "author" | "createdBy">;
 
 export function useSearch(keyword: string, delay = 350) {
     const [results, setResults] = useState<SearchBlogItem[]>([]);

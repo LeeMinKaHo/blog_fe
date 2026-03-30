@@ -29,6 +29,7 @@ export interface Blog {
     views?: number;
     totalLikes?: number;
     category?: Category;
+    author?: BlogAuthor;
     createdBy?: BlogAuthor;
     updatedBy?: BlogAuthor;
     createdAt?: string;

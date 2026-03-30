@@ -4,7 +4,7 @@ export interface Notification {
     id: number;
     recipientId: number;
     senderId: number;
-    type: 'LIKE_POST' | 'LIKE_COMMENT' | 'COMMENT_POST';
+    type: 'LIKE_POST' | 'LIKE_COMMENT' | 'COMMENT_POST' | 'FOLLOW';
     targetId: number;
     content: string;
     isRead: boolean;

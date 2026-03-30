@@ -12,7 +12,10 @@ import AvatarUploadModal from "./AvatarUploadModal";
 
 interface ProfileCardProps {
    user: UserProfile;
+   stats?: UserStats;
+   isOwnProfile?: boolean;
 }
+
 
 function formatJoinDate(dateStr: string | null | undefined) {
    if (!dateStr) return "Chưa rõ";
@@ -29,22 +32,10 @@ function StatBox({ icon, label, value }: { icon: React.ReactNode; label: string;
    );
 }
 
-export default function ProfileCard({ user: initialUser }: ProfileCardProps) {
+export default function ProfileCard({ user, stats, isOwnProfile = false }: ProfileCardProps) {
    const [isEditing, setIsEditing] = useState(false);
    const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
-   // Lấy profile mới nhất
-   const { data: user = initialUser } = useQuery<UserProfile>({
-      queryKey: ["profile"],
-      queryFn: getProfile,
-      initialData: initialUser,
-   });
-
-   // Lấy stats
-   const { data: stats } = useQuery<UserStats>({
-      queryKey: ["userStats"],
-      queryFn: getUserStats,
-   });
 
    const currentAvatar = user.avatar || `https://ui-avatars.com/api/?background=3b82f6&color=fff&name=${encodeURIComponent(user.user.name)}`;
 
@@ -74,25 +65,28 @@ export default function ProfileCard({ user: initialUser }: ProfileCardProps) {
                            />
                         </div>
                      </div>
-                     {/* Camera button — mở modal */}
-                     <button
-                        onClick={() => setIsAvatarModalOpen(true)}
-                        className="absolute bottom-2 right-2 p-2 bg-blue-600 text-white rounded-xl shadow-lg border-2 border-white hover:bg-blue-700 transition-all group-hover:scale-110"
-                        title="Đổi ảnh đại diện"
-                     >
-                        <Camera size={16} />
-                     </button>
-                  </div>
+                      {/* Camera button — chỉ hiện nếu là chính chủ */}
+                      {isOwnProfile && (
+                         <button
+                            onClick={() => setIsAvatarModalOpen(true)}
+                            className="absolute bottom-2 right-2 p-2 bg-blue-600 text-white rounded-xl shadow-lg border-2 border-white hover:bg-blue-700 transition-all group-hover:scale-110"
+                            title="Đổi ảnh đại diện"
+                         >
+                            <Camera size={16} />
+                         </button>
+                      )}
+                   </div>
+ 
+                   {!isEditing && isOwnProfile && (
+                      <button
+                         onClick={() => setIsEditing(true)}
+                         className="flex items-center gap-2 bg-gray-900 text-white px-5 py-2.5 rounded-2xl font-bold text-sm hover:bg-blue-600 transition-all active:scale-95 shadow-lg shadow-gray-200"
+                      >
+                         <Edit2 size={15} />
+                         Chỉnh sửa
+                      </button>
+                   )}
 
-                  {!isEditing && (
-                     <button
-                        onClick={() => setIsEditing(true)}
-                        className="flex items-center gap-2 bg-gray-900 text-white px-5 py-2.5 rounded-2xl font-bold text-sm hover:bg-blue-600 transition-all active:scale-95 shadow-lg shadow-gray-200"
-                     >
-                        <Edit2 size={15} />
-                        Chỉnh sửa
-                     </button>
-                  )}
                </div>
 
                {/* Stats bar */}

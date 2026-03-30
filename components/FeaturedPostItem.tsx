@@ -17,7 +17,7 @@ export default function FeaturedPostItem({ blog, rank }: FeaturedPostItemProps) 
                     {blog.title}
                 </h3>
                 <p className="text-[13px] font-body text-gray-400 mt-1">
-                    {blog.createdBy?.name || "Member"}
+                    {blog.author?.name || "Member"}
                 </p>
             </div>
         </Link>

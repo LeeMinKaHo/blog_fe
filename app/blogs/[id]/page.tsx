@@ -51,12 +51,12 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
                <div className="flex flex-wrap justify-center items-center gap-6 text-gray-500 text-sm font-medium">
                   
                   <div className="flex items-center gap-3">
-                     <div className="flex items-center gap-1">
-                        <User size={16} className="text-blue-500" /> 
-                        <span>{post.createdBy?.name || "Member"}</span>
-                     </div>
-                     {(post.authorId || post.createdBy?.id) && (
-                        <FollowButton userId={post.authorId || post.createdBy!.id} />
+                     <Link href={`/profile/${post.author?.id}`} className="flex items-center gap-1 group/author hover:bg-gray-100 px-2 py-1 rounded-md transition-colors">
+                        <User size={16} className="text-blue-500 group-hover/author:text-blue-700" /> 
+                        <span className="group-hover/author:text-blue-600 font-bold">{post.author?.name || "Member"}</span>
+                     </Link>
+                     {post.author?.id && (
+                        <FollowButton userId={post.author.id} />
                      )}
                   </div>
 

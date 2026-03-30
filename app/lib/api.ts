@@ -13,7 +13,7 @@
 
 // Re-export ApiError từ apiClient để code cũ không bị break
 export { ApiError } from "@/app/lib/apiClient";
-export { apiClient as apiFetch } from "@/app/lib/apiClient";
+export { apiClient as apiFetch, apiClient as api } from "@/app/lib/apiClient";
 
 // Re-export types từ services
 export type { Blog as Post, PaginatedBlogs, PaginationMeta } from "@/app/services/blogService";
