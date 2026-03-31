@@ -6,10 +6,13 @@
  * ╚═══════════════════════════════════════════════════════╝
  */
 
-// ─── Base URL ─────────────────────────────────────────────────────────────────
-// Đặt NEXT_PUBLIC_API_URL trong .env.local để thay đổi base URL
-export const API_BASE_URL =
-    process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+// Đặt NEXT_PUBLIC_API_URL trong .env.local để browser gọi
+// Đặt API_URL (không có NEXT_PUBLIC_) để Next server gọi nội bộ (Docker)
+const isServer = typeof window === "undefined";
+
+export const API_BASE_URL = isServer
+    ? (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000")
+    : (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000");
 
 // ─── Error class ──────────────────────────────────────────────────────────────
 export class ApiError extends Error {
