@@ -134,12 +134,16 @@ export default function Header() {
 
                               className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
                            >
-                              <div className="w-8 h-8 md:w-9 md:h-9 rounded-full overflow-hidden border-2 border-blue-500/20">
-                                 <img
-                                    src={user.avatar || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"}
-                                    alt={user.name}
-                                    className="w-full h-full object-cover"
-                                 />
+                              <div className="w-8 h-8 md:w-9 md:h-9 rounded-full overflow-hidden border-2 border-blue-500/20 bg-blue-50 flex items-center justify-center">
+                                 {user.avatar ? (
+                                    <img
+                                       src={user.avatar}
+                                       alt={user.name}
+                                       className="w-full h-full object-cover"
+                                    />
+                                 ) : (
+                                    <User size={18} className="text-blue-500" />
+                                 )}
                               </div>
                               <ChevronDown size={14} className={`text-gray-500 transition-transform hidden sm:block ${isMenuOpen ? 'rotate-180' : ''}`} />
                            </button>
