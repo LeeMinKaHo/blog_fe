@@ -5,12 +5,15 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast";
 import { login } from "@/app/services/authService";
 
+import { useQueryClient } from "@tanstack/react-query";
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,13 +21,18 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await login({ email, password });
+      
+      // ✅ Cập nhật cache ngay lập tức để Header nhận data mới mà không cần fetch lại
+      queryClient.setQueryData(["me"], res);
+      
       toast.success("Đăng nhập thành công!");
       // apiClient đã unwrap json.data nên res chính là { id, email, name, role, isVerified }
       if (res.role === "Admin" || res.role === "Moderator") {
         router.push("/admin");
       } else {
-        router.push("/blogs");
+        router.push("/");
       }
+      router.refresh(); // Force refresh to sync cookies/session state
     } catch (err: any) {
       toast.error(err?.message ?? "Đăng nhập thất bại");
     } finally {

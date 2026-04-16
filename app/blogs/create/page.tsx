@@ -9,6 +9,9 @@ import { AuthGuard } from "@/components/AuthGuard";
 import { apiClient } from "@/app/lib/apiClient";
 import { useToastActions } from "@/components/toast/useToastActions";
 import ImageUploader from "@/components/editor/ImageUploader";
+import { getCategories, Category, createBlog } from "@/app/services/blogService";
+import { useQuery } from "@tanstack/react-query";
+import { Tag as TagIcon } from "lucide-react";
 
 export default function CreateBlogPage() {
     const router = useRouter();
@@ -17,11 +20,18 @@ export default function CreateBlogPage() {
     const [description, setDescription] = useState("");
     const [thumbnail, setThumbnail] = useState("");
     const [content, setContent] = useState("");
+    const [categoryId, setCategoryId] = useState<number | undefined>(undefined);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const { data: categories = [] } = useQuery<Category[]>({
+        queryKey: ["categories"],
+        queryFn: getCategories,
+        staleTime: 10 * 60 * 1000,
+    });
+
     const handlePublish = async () => {
-        if (!title || !content) {
-            toast.warning("Vui lòng nhập ít nhất tiêu đề và nội dung bài viết!");
+        if (!title || !content || !categoryId) {
+            toast.warning("Vui lòng nhập đầy đủ tiêu đề, nội dung và chọn danh mục!");
             return;
         }
 
@@ -29,15 +39,12 @@ export default function CreateBlogPage() {
 
         try {
             await toast.promise(
-                apiClient("/blogs", {
-                    method: "POST",
-                    body: JSON.stringify({
-                        title,
-                        content,
-                        description: description || "Không có mô tả",
-                        thumbnail: thumbnail || "",
-                        categoryId: 1
-                    }),
+                createBlog({
+                    title,
+                    content,
+                    description: description || "Không có mô tả",
+                    thumbnail: thumbnail || "",
+                    categoryId: categoryId || (categories.length > 0 ? categories[0].id : 1)
                 }),
                 {
                     loading: "Đang đăng bài viết kiến tạo của bạn...",
@@ -132,6 +139,36 @@ export default function CreateBlogPage() {
                                     ✓ {thumbnail.split("/").pop()}
                                 </p>
                             )}
+                        </div>
+
+                        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <TagIcon size={18} className="text-purple-500" />
+                                Danh mục (Category)
+                            </h3>
+                            <div className="space-y-3">
+                                <select
+                                    value={categoryId || ""}
+                                    onChange={(e) => setCategoryId(Number(e.target.value))}
+                                    className="w-full h-11 px-4 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none cursor-pointer"
+                                    style={{
+                                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                                        backgroundRepeat: 'no-repeat',
+                                        backgroundPosition: 'right 1rem center',
+                                        backgroundSize: '1.25rem'
+                                    }}
+                                >
+                                    <option value="" disabled>Chọn danh mục bài viết</option>
+                                    {categories.map((cat) => (
+                                        <option key={cat.id} value={cat.id}>
+                                            {cat.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <p className="text-[10px] text-gray-400 font-medium px-1">
+                                    Phân loại bài viết giúp độc giả dễ dàng tìm thấy bạn hơn.
+                                </p>
+                            </div>
                         </div>
 
                         <div className="bg-blue-600 rounded-2xl p-6 text-white shadow-xl shadow-blue-200 relative overflow-hidden">
