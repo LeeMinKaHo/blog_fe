@@ -15,6 +15,7 @@ import { usePathname } from "next/navigation";
 export default function Header() {
    const pathname = usePathname();
    const { data: user, isLoading } = useMe();
+
    const [isMenuOpen, setIsMenuOpen] = useState(false);
    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
    const dropdownRef = useRef<HTMLDivElement>(null);
@@ -58,12 +59,11 @@ export default function Header() {
    if (pathname?.startsWith("/admin")) return null;
 
    return (
-      <header 
-         className={`w-full sticky top-0 z-50 transition-all duration-300 ${
-            isScrolled 
-               ? "bg-white/80 backdrop-blur-md shadow-lg border-b border-gray-100 py-2" 
+      <header
+         className={`w-full sticky top-0 z-50 transition-all duration-300 ${isScrolled
+               ? "bg-white/80 backdrop-blur-md shadow-lg border-b border-gray-100 py-2"
                : "bg-white border-b border-gray-100 py-4"
-         }`}
+            }`}
       >
          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 md:px-6">
             <Link href="/" className="flex items-center gap-2 group shrink-0">
@@ -238,7 +238,7 @@ export default function Header() {
                )}
 
                {/* Mobile Menu Toggle */}
-               <button 
+               <button
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                   className="p-2 lg:hidden text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                   aria-label="Toggle mobile menu"

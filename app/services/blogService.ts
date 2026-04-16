@@ -52,6 +52,7 @@ export interface PaginatedBlogs {
 
 export interface CreateBlogPayload {
     title: string;
+    content: string;
     description?: string;
     descrtiption?: string;
     thumbnail?: string;
