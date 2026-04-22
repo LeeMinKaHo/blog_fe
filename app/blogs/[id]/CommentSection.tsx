@@ -35,7 +35,7 @@ export default function CommentSection({ postId }: { postId: number }) {
    });
 
    return (
-      <section className="mt-16 pt-10 border-t border-gray-100">
+      <section id="comment-section" className="mt-16 pt-10 border-t border-gray-100">
          {/* Header */}
          <div className="flex items-center gap-3 mb-8">
             <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center">

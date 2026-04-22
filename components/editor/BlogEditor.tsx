@@ -45,9 +45,20 @@ const MenuBar = ({ editor }: { editor: any }) => {
                 credentials: "include",
                 body: formData,
             });
-            if (!res.ok) throw new Error("Upload thất bại");
-            const { url } = await res.json();
-            editor.chain().focus().setImage({ src: url }).run();
+            if (!res.ok) {
+                const errText = await res.text().catch(() => "");
+                let errMsg = `Upload thất bại (HTTP ${res.status})`;
+                try {
+                    const errJson = JSON.parse(errText);
+                    if (errJson.message) errMsg = errJson.message;
+                } catch { }
+                throw new Error(errMsg);
+            }
+            const result = await res.json();
+            // BE bọc response trong { data: { filename, url } }
+            const imageUrl = result?.data?.url ?? result?.url;
+            if (!imageUrl) throw new Error("Không lấy được URL ảnh từ server");
+            editor.chain().focus().setImage({ src: imageUrl }).run();
         } catch (err: any) {
             console.error("Upload ảnh thất bại:", err);
             toast.error(err.message || "Không thể tải ảnh lên. Vui lòng thử lại!");
@@ -243,11 +254,47 @@ export default function BlogEditor({ content, onChange }: BlogEditorProps) {
             .tiptap {
                font-family: inherit;
             }
+            .tiptap h1 {
+               font-size: 2.25rem;
+               font-weight: 800;
+               margin-top: 1.5rem;
+               margin-bottom: 1rem;
+               line-height: 1.2;
+            }
+            .tiptap h2 {
+               font-size: 1.875rem;
+               font-weight: 700;
+               margin-top: 1.25rem;
+               margin-bottom: 0.75rem;
+               line-height: 1.3;
+            }
+            .tiptap ul {
+               list-style-type: disc;
+               padding-left: 1.5rem;
+               margin-top: 0.5rem;
+               margin-bottom: 0.5rem;
+            }
+            .tiptap ol {
+               list-style-type: decimal;
+               padding-left: 1.5rem;
+               margin-top: 0.5rem;
+               margin-bottom: 0.5rem;
+            }
+            .tiptap li {
+               margin-bottom: 0.25rem;
+            }
             .tiptap blockquote {
                border-left: 4px solid #3b82f6;
                padding-left: 1rem;
                font-style: italic;
                color: #4b5563;
+               margin-top: 1rem;
+               margin-bottom: 1rem;
+            }
+            .tiptap a {
+               color: #2563eb;
+               text-decoration: underline;
+               cursor: pointer;
             }
          `}</style>
         </div>

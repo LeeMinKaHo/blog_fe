@@ -9,9 +9,10 @@ import { useQueryClient } from "@tanstack/react-query";
 
 interface SavePostButtonProps {
     postId: string | number;
+    variant?: "default" | "sidebar";
 }
 
-export default function SavePostButton({ postId }: SavePostButtonProps) {
+export default function SavePostButton({ postId, variant = "default" }: SavePostButtonProps) {
     const { data: user } = useMe();
     const [isSaved, setIsSaved] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -60,6 +61,35 @@ export default function SavePostButton({ postId }: SavePostButtonProps) {
             setIsLoading(false);
         }
     };
+
+    if (variant === "sidebar") {
+        return (
+            <button
+                onClick={toggleSave}
+                disabled={isLoading}
+                className="group flex flex-col items-center gap-1.5 transition-all"
+            >
+                <div 
+                    className={`p-3 rounded-full transition-all ${
+                        isSaved 
+                        ? "text-blue-500" 
+                        : "text-gray-400 group-hover:text-black dark:group-hover:text-white"
+                    }`}
+                >
+                    {isLoading ? (
+                        <Loader2 size={22} className="animate-spin" />
+                    ) : isSaved ? (
+                        <Bookmark size={22} fill="currentColor" />
+                    ) : (
+                        <Bookmark size={22} />
+                    )}
+                </div>
+                <span className={`text-xs font-bold ${isSaved ? "text-blue-500" : "text-gray-500 group-hover:text-black dark:group-hover:text-white"}`}>
+                    {isSaved ? "Đã lưu" : "Lưu"}
+                </span>
+            </button>
+        );
+    }
 
     return (
         <button

@@ -10,9 +10,10 @@ import { useToast } from "./toast/ToastContext";
 interface LikePostButtonProps {
     postId: string | number;
     initialLikes: number;
+    variant?: "default" | "sidebar";
 }
 
-export default function LikePostButton({ postId, initialLikes }: LikePostButtonProps) {
+export default function LikePostButton({ postId, initialLikes, variant = "default" }: LikePostButtonProps) {
     const { data: me } = useMe();
     const toast = useToast();
     const [liked, setLiked] = useState(false);
@@ -40,6 +41,33 @@ export default function LikePostButton({ postId, initialLikes }: LikePostButtonP
             }
         },
     });
+
+    if (variant === "sidebar") {
+        return (
+            <button
+                onClick={() => toggleLike()}
+                disabled={isPending}
+                className="group flex flex-col items-center gap-1.5 transition-all"
+            >
+                <div 
+                    className={`p-3 rounded-full transition-all ${
+                        liked 
+                        ? "text-red-500" 
+                        : "text-gray-400 group-hover:text-black dark:group-hover:text-white"
+                    }`}
+                >
+                    {isPending ? (
+                        <Loader2 size={22} className="animate-spin" />
+                    ) : (
+                        <Heart size={22} fill={liked ? "currentColor" : "none"} />
+                    )}
+                </div>
+                <span className={`text-xs font-bold ${liked ? "text-red-500" : "text-gray-500 group-hover:text-black dark:group-hover:text-white"}`}>
+                    {totalLikes}
+                </span>
+            </button>
+        );
+    }
 
     return (
         <button
