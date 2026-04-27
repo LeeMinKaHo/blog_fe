@@ -12,7 +12,7 @@ import { API_BASE_URL } from "@/app/lib/apiClient";
 import {
     Bold, Italic, Underline as UnderlineIcon,
     Link as LinkIcon, Image as ImageIcon,
-    List, ListOrdered, Heading1, Heading2,
+    List, ListOrdered, Heading1, Heading2, Heading3,
     Youtube as YoutubeIcon, Quote, Undo, Redo
 } from "lucide-react";
 import { useToast } from "@/components/toast";
@@ -113,6 +113,13 @@ const MenuBar = ({ editor }: { editor: any }) => {
                 title="Tiêu đề 2"
             >
                 <Heading2 size={18} />
+            </button>
+            <button
+                onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                className={`p-2 rounded-lg transition-colors ${editor.isActive("heading", { level: 3 }) ? "bg-blue-100 text-blue-600" : "hover:bg-gray-200"}`}
+                title="Tiêu đề 3"
+            >
+                <Heading3 size={18} />
             </button>
 
             <div className="w-px h-6 bg-gray-300 mx-1 self-center"></div>
@@ -267,6 +274,13 @@ export default function BlogEditor({ content, onChange }: BlogEditorProps) {
                margin-top: 1.25rem;
                margin-bottom: 0.75rem;
                line-height: 1.3;
+            }
+            .tiptap h3 {
+               font-size: 1.5rem;
+               font-weight: 600;
+               margin-top: 1rem;
+               margin-bottom: 0.5rem;
+               line-height: 1.4;
             }
             .tiptap ul {
                list-style-type: disc;

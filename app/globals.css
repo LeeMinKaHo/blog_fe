@@ -82,4 +82,12 @@
       background: rgba(15, 15, 15, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.1);
    }
+
+   /* Chống Header đè lên tiêu đề khi nhấn vào Mục lục */
+   .content-rich-text h1,
+   .content-rich-text h2,
+   .content-rich-text h3,
+   .content-rich-text h4 {
+      scroll-margin-top: 100px;
+   }
 }

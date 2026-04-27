@@ -26,6 +26,21 @@ function slugify(text: string): string {
 }
 
 /**
+ * Giải mã các thực thể HTML cơ bản (ví dụ: &amp; -> &)
+ */
+function decodeHtmlEntities(text: string): string {
+    const entities: Record<string, string> = {
+        '&amp;': '&',
+        '&lt;': '<',
+        '&gt;': '>',
+        '&quot;': '"',
+        '&#39;': "'",
+        '&apos;': "'"
+    };
+    return text.replace(/&amp;|&lt;|&gt;|&quot;|&#39;|&apos;/g, (match) => entities[match]);
+}
+
+/**
  * Xử lý HTML content:
  * 1. Tìm các thẻ h2, h3
  * 2. Inject id vào những thẻ chưa có id
@@ -46,7 +61,10 @@ export function extractToc(html: string): {
             const level = parseInt(tag[1]) as 2 | 3;
 
             // Lấy text thuần từ inner HTML (loại bỏ các thẻ HTML con)
-            const text = innerContent.replace(/<[^>]+>/g, "").trim();
+            let text = innerContent.replace(/<[^>]+>/g, "").trim();
+            
+            // Giải mã các ký tự HTML (ví dụ &amp; thành &)
+            text = decodeHtmlEntities(text);
 
             // Kiểm tra xem đã có id chưa
             const existingIdMatch = attrs.match(/id=["']([^"']+)["']/i);
