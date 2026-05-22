@@ -45,7 +45,7 @@ function StatCard({
 
 function statusConfig(status: string) {
     switch (status) {
-        case "Pushlish": return { label: "Đã xuất bản", className: "bg-green-100 text-green-700" };
+        case "Publish": return { label: "Đã xuất bản", className: "bg-green-100 text-green-700" };
         case "Draft": return { label: "Bản nháp", className: "bg-gray-100 text-gray-600" };
         default: return { label: status, className: "bg-orange-100 text-orange-700" };
     }

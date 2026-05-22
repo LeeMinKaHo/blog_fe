@@ -13,9 +13,10 @@ import {
     Bold, Italic, Underline as UnderlineIcon,
     Link as LinkIcon, Image as ImageIcon,
     List, ListOrdered, Heading1, Heading2, Heading3,
-    Youtube as YoutubeIcon, Quote, Undo, Redo
+    Youtube as YoutubeIcon, Quote, Undo, Redo, HelpCircle
 } from "lucide-react";
 import { useToast } from "@/components/toast";
+import GuideModal from "./GuideModal";
 
 interface BlogEditorProps {
     content: string;
@@ -27,6 +28,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
     const toast = useToast();
     const imageInputRef = useRef<HTMLInputElement>(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [isGuideOpen, setIsGuideOpen] = useState(false);
 
     const addLink = () => {
         const url = window.prompt("Nhập địa chỉ Link:");
@@ -202,6 +204,18 @@ const MenuBar = ({ editor }: { editor: any }) => {
             >
                 <Redo size={18} />
             </button>
+
+            <div className="w-px h-6 bg-gray-300 mx-1 self-center"></div>
+
+            <button
+                onClick={() => setIsGuideOpen(true)}
+                className="p-2 rounded-lg transition-colors bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white"
+                title="Hướng dẫn viết bài"
+            >
+                <HelpCircle size={18} />
+            </button>
+
+            <GuideModal isOpen={isGuideOpen} onClose={() => setIsGuideOpen(false)} />
         </div>
     );
 };

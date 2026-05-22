@@ -30,7 +30,7 @@ export interface AdminStats {
 export interface AdminBlog {
     id: number;
     title: string;
-    status: "Pushlish" | "Draft" | "Delete";
+    status: "Publish" | "Draft" | "Delete";
     views: number;
     createdAt: string;
     updatedAt: string;

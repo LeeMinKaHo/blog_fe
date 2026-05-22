@@ -18,7 +18,7 @@ import {
 // ─── Status Badge ───────────────────────────────────────────────────────────────
 function StatusBadge({ status }: { status: string }) {
     const map: Record<string, { label: string; cls: string }> = {
-        Pushlish: { label: "Đang hiện", cls: "bg-emerald-50 text-emerald-700 border-emerald-100" },
+        Publish: { label: "Đang hiện", cls: "bg-emerald-50 text-emerald-700 border-emerald-100" },
         Draft: { label: "Đã ẩn", cls: "bg-amber-50 text-amber-700 border-amber-100" },
         Delete: { label: "Đã xoá", cls: "bg-red-50 text-red-600 border-red-100" },
     };
@@ -172,12 +172,12 @@ function PostRow({
     onEdit: (p: Blog) => void;
 }) {
     const qc = useQueryClient();
-    const isVisible = post.status === "Pushlish";
+    const isVisible = post.status === "Publish";
 
     const { mutate: toggleVisibility, isPending } = useMutation({
         mutationFn: () =>
             updateBlog(post.id, {
-                status: isVisible ? ("Draft" as any) : ("Pushlish" as any),
+                status: isVisible ? ("Draft" as any) : ("Publish" as any),
             }),
         onSuccess: () => qc.invalidateQueries({ queryKey: ["my-blogs"] }),
     });
@@ -265,7 +265,7 @@ export default function MyPostsPage() {
     const meta = data?.meta;
     const totalPages = meta?.totalPages ?? 1;
 
-    const publishedCount = posts.filter((p) => p.status === "Pushlish").length;
+    const publishedCount = posts.filter((p) => p.status === "Publish").length;
     const draftCount = posts.filter((p) => p.status === "Draft").length;
 
     return (

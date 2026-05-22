@@ -13,13 +13,13 @@ import Link from "next/link";
 
 const STATUS_OPTIONS = [
     { value: "all", label: "Tất cả" },
-    { value: "Pushlish", label: "Đã xuất bản" },
+    { value: "Publish", label: "Đã xuất bản" },
     { value: "Draft", label: "Bản nháp" },
 ];
 
 function statusConfig(s: string) {
     switch (s) {
-        case "Pushlish": return { label: "Xuất bản", cls: "bg-green-100 text-green-700" };
+        case "Publish": return { label: "Xuất bản", cls: "bg-green-100 text-green-700" };
         case "Draft": return { label: "Bản nháp", cls: "bg-gray-100 text-gray-600" };
         default: return { label: s, cls: "bg-orange-100 text-orange-700" };
     }
@@ -175,16 +175,16 @@ export default function AdminPostsPage() {
                                                     <button
                                                         onClick={() => changeStatus({
                                                             id: post.id,
-                                                            status: post.status === "Pushlish" ? "Draft" : "Pushlish"
+                                                            status: post.status === "Publish" ? "Draft" : "Publish"
                                                         })}
                                                         disabled={changingStatus}
-                                                        title={post.status === "Pushlish" ? "Chuyển về Draft" : "Xuất bản"}
-                                                        className={`p-2 rounded-lg transition-colors ${post.status === "Pushlish"
+                                                        title={post.status === "Publish" ? "Chuyển về Draft" : "Xuất bản"}
+                                                        className={`p-2 rounded-lg transition-colors ${post.status === "Publish"
                                                             ? "text-green-500 hover:bg-green-50"
                                                             : "text-gray-400 hover:bg-gray-100"
                                                             }`}
                                                     >
-                                                        {post.status === "Pushlish" ? <Check size={14} /> : <Clock size={14} />}
+                                                        {post.status === "Publish" ? <Check size={14} /> : <Clock size={14} />}
                                                     </button>
 
                                                     {/* View */}

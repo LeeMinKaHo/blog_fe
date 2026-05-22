@@ -16,7 +16,7 @@ export interface BlogAuthor {
     avatar?: string;
 }
 
-export type BlogStatus = "Pushlish" | "Draft" | "Delete";
+export type BlogStatus = "Publish" | "Draft" | "Delete";
 
 export interface Blog {
     id: number;
